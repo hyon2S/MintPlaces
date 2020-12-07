@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">mintplaces1</string>
+    <string name="google_map_api_key">YOUR_API_KEY</string>
 </resources>

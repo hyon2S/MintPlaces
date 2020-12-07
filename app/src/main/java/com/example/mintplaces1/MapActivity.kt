@@ -20,5 +20,20 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
+        setMap()
+    }
+
+    // 지도 초기 세팅
+    private fun setMap() {
+        map.apply {
+            mapType = GoogleMap.MAP_TYPE_NORMAL
+            // isMyLocationEnabled 는 권한 확인 후 세팅
+
+            uiSettings.apply {
+                isCompassEnabled = true
+                isZoomControlsEnabled = true
+                isMyLocationButtonEnabled = true
+            }
+        }
     }
 }

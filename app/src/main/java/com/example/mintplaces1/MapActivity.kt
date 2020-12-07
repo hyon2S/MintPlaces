@@ -3,6 +3,7 @@ package com.example.mintplaces1
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.google.android.gms.maps.*
+import com.google.android.gms.maps.model.LatLng
 
 class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var map: GoogleMap
@@ -21,6 +22,12 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
         setMap()
+
+        // 현재 위치로 이동하기 전, 지도를 서울시청에서 시작
+        val cameraUpdate: CameraUpdate = CameraUpdateFactory.newLatLngZoom(SEOUL_CITY_HALL_LATLNG, DEFAULT_CAMERA_ZOOM)
+        map.moveCamera(cameraUpdate)
+
+        // 현재 위치 받아올 수 있으면 받아와서 카메라 현재 위치로 이동시킴.
     }
 
     // 지도 초기 세팅
@@ -36,4 +43,11 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
     }
+
+    companion object {
+        // 지도 처음 시작 위치를 서울시청으로 설정.
+        val SEOUL_CITY_HALL_LATLNG: LatLng = LatLng(37.566669, 126.978406)
+        val DEFAULT_CAMERA_ZOOM: Float = 16.0f
+    }
+
 }

@@ -108,8 +108,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     // https://developer.android.com/training/location/change-location-settings#get-settings
     // https://developer.android.com/training/location/change-location-settings#prompt
-    // 현재 사용자의 위치 정보를 받아오는 세팅
-    @SuppressLint("MissingPermission")
+    // 현재 사용자의 위치 정보를 받아옴
     private fun startLocationUpdates() {
         val builder = LocationSettingsRequest.Builder()
                 .addLocationRequest(locationRequest)
@@ -117,9 +116,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         val task: Task<LocationSettingsResponse> = client.checkLocationSettings(builder.build())
         task.addOnSuccessListener {
             Log.d(TAG, "위치 설정 이상 없음")
-            // 인터넷 연결 확인 필요
-            // 위치 정보 받아오기 시작
-            fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
+            removeAndRequestLocationUpdates()
         }
         task.addOnFailureListener {
             Log.d(TAG, "위치 설정 실패: ${it.message}")
@@ -135,6 +132,16 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+    // 기존 locationRequest가 있으면 제거하고 다시 처음부터 위치 업데이트 시작.
+    @SuppressLint("MissingPermission")
+    private fun removeAndRequestLocationUpdates() {
+        fusedLocationProviderClient.removeLocationUpdates(locationCallback)
+        currentLocation = null
+        // 인터넷 연결 확인 필요
+        // 위치 정보 받아오기 시작
+        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
+    }
+
     @SuppressLint("MissingPermission")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         Log.d(TAG, "onActivityResult()")
@@ -143,9 +150,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             GPS_REQ_CODE -> {
                 Log.d(TAG, "resultCode: ${resultCode}")
                 if (resultCode == RESULT_OK) {
-                    // 인터넷 연결 확인 필요
-                    // 위치 정보 받아오기 한 번 더 도전..
-                    fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
+                    // GPS 설정도 잘 되었으니 위치 업데이트 다시 시도
+                    removeAndRequestLocationUpdates()
                 } else {
                     // 위치 정보에 접근할 수 없으니 걍 마지막 접속 위치로 카메라 이동
                 }
@@ -163,6 +169,13 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                 isCompassEnabled = true
                 isZoomControlsEnabled = true
                 isMyLocationButtonEnabled = true
+            }
+            setOnMyLocationButtonClickListener {
+                // 사용자 위치 얻어오기 시작
+                startLocationUpdates()
+                true
+                // If the listener returns true, the event is consumed and the default behavior (i.e. The camera moves such that it is centered on the user's location) will not occur.
+                // https://developers.google.com/android/reference/com/google/android/gms/maps/GoogleMap#setOnMyLocationButtonClickListener(com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener)
             }
         }
     }

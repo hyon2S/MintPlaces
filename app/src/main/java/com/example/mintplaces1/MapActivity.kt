@@ -12,12 +12,17 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
 import androidx.activity.result.registerForActivityResult
 import com.google.android.gms.common.api.ResolvableApiException
+import com.google.android.gms.common.api.Status
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.tasks.Task
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 
 class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var map: GoogleMap
@@ -101,6 +106,37 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                     supportFragmentManager.beginTransaction().replace(R.id.frg_map, it).commit()
                 }
         mapFragment.getMapAsync(this)
+
+        // 장소 검색창 세팅
+        // https://developers.google.com/places/android-sdk/autocomplete
+        val placeSearchFragment = supportFragmentManager.findFragmentById(R.id.frg_place_search) as AutocompleteSupportFragment?
+                ?: AutocompleteSupportFragment.newInstance().also {
+                    supportFragmentManager.beginTransaction().replace(R.id.frg_place_search, it).commit()
+                }
+        // place 초기화. 안 하니까 오류생김.
+        if (!Places.isInitialized())
+            Places.initialize(baseContext, getString(R.string.google_map_api_key))
+        // 장소 이름과 위도경도 정보를 사용할 예정임.
+        placeSearchFragment.setPlaceFields(listOf(Place.Field.NAME, Place.Field.LAT_LNG))
+        placeSearchFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
+            override fun onPlaceSelected(place: Place) {
+                Log.i(TAG, "Place: ${place.name}, ${place.latLng}")
+                // 마커 위치를 검색한 장소로 옮김
+                val latLng: LatLng = place.latLng!!
+                marker?.apply {
+                    position = latLng
+                    title = "${place.name}"
+                    isVisible = true
+                    showInfoWindow()
+                }
+                // 그 장소로 카메라 이동
+                val cameraUpdate: CameraUpdate = CameraUpdateFactory.newLatLng(latLng)
+                map.animateCamera(cameraUpdate) // 순간이동 말고 스르륵 이동
+            }
+            override fun onError(status: Status) {
+                Log.i(TAG, "An error occurred: $status")
+            }
+        })
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -190,6 +226,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             marker = addMarker(MarkerOptions()
                     .position(SEOUL_CITY_HALL_LATLNG) // 마커 위치는, 일단 걍 아무 위치나 있어야되니까 넣은 것으로 별 의미는 없음
                     .visible(false) // 처음 시작할때는 안 보이게 함.
+                    .title("")
             )
             // 지도를 클릭하면 클릭한 위치로 마커를 옮김.
             setOnMapClickListener {
@@ -197,6 +234,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                 val latLng = LatLng(it.latitude, it.longitude)
                 marker?.apply {
                     position = latLng
+                    title = ""
                     isVisible = true
                 }
             }

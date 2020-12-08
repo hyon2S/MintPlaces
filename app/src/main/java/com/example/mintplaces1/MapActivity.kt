@@ -29,6 +29,9 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         priority = LocationRequest.PRIORITY_HIGH_ACCURACY
     }
 
+    // 네트워크 연결 상태 확인
+    private lateinit var networkConnectionChecker: NetworkConnectionChecker
+
     // 위치 접근 권한
     // https://developer.android.com/training/permissions/requesting
     // https://pluu.github.io/blog/android/2020/05/01/migation-activity-result/
@@ -43,6 +46,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                         break
                     }
                 }
+
+                networkConnectionChecker.notifyNetworkConnection()
 
                 @SuppressLint("MissingPermission")
                 when (isGranted) {
@@ -85,6 +90,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
             }
         }
+        networkConnectionChecker = NetworkConnectionChecker(baseContext)
 
         // 지도 본체 세팅
         val mapFragment = supportFragmentManager.findFragmentById(R.id.frg_map) as SupportMapFragment?
@@ -138,7 +144,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun removeAndRequestLocationUpdates() {
         fusedLocationProviderClient.removeLocationUpdates(locationCallback)
         currentLocation = null
-        // 인터넷 연결 확인 필요
+        networkConnectionChecker.notifyNetworkConnection()
         // 위치 정보 받아오기 시작
         fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
     }

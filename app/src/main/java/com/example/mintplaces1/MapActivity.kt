@@ -25,7 +25,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private var currentLocation: Location? = null // 위치 추적 처음 시작할때는 null, 그 외에는 계속 새로 얻은 위치로 업데이트 시켜줌.
     private val locationRequest = LocationRequest.create().apply {
         interval = 5000
-        fastestInterval = 5000
+        fastestInterval = 3000
         priority = LocationRequest.PRIORITY_HIGH_ACCURACY
     }
 

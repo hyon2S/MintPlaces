@@ -12,6 +12,7 @@ import com.google.android.gms.maps.model.LatLng
 class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var map: GoogleMap
 
+    // 위치 접근 권한
     // https://developer.android.com/training/permissions/requesting
     // https://pluu.github.io/blog/android/2020/05/01/migation-activity-result/
     val locationAccessPermissionLauncher =

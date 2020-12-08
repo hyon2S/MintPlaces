@@ -60,6 +60,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        Log.d(TAG, "onCreate()")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_map)
 
@@ -148,7 +149,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             GPS_REQ_CODE -> {
-                Log.d(TAG, "resultCode: ${resultCode}")
                 if (resultCode == RESULT_OK) {
                     // GPS 설정도 잘 되었으니 위치 업데이트 다시 시도
                     removeAndRequestLocationUpdates()

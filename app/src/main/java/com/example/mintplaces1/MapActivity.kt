@@ -15,6 +15,8 @@ import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.tasks.Task
 
 class MapActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -28,7 +30,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         fastestInterval = 3000
         priority = LocationRequest.PRIORITY_HIGH_ACCURACY
     }
-
+    // 선택한 장소를 표시 할 마커. 장소 선택은 한 번에 한 군데밖에 안 되므로 마커 하나를 끝까지 사용.
+    private var marker: Marker? = null
     // 네트워크 연결 상태 확인
     private lateinit var networkConnectionChecker: NetworkConnectionChecker
 
@@ -182,6 +185,20 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                 true
                 // If the listener returns true, the event is consumed and the default behavior (i.e. The camera moves such that it is centered on the user's location) will not occur.
                 // https://developers.google.com/android/reference/com/google/android/gms/maps/GoogleMap#setOnMyLocationButtonClickListener(com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener)
+            }
+            // 처음 시작할 때 visible을 false로 세팅한 마커를 일단 지도에 추가해놓고,
+            marker = addMarker(MarkerOptions()
+                    .position(SEOUL_CITY_HALL_LATLNG) // 마커 위치는, 일단 걍 아무 위치나 있어야되니까 넣은 것으로 별 의미는 없음
+                    .visible(false) // 처음 시작할때는 안 보이게 함.
+            )
+            // 지도를 클릭하면 클릭한 위치로 마커를 옮김.
+            setOnMapClickListener {
+                Log.d(TAG, "맵 클릭")
+                val latLng = LatLng(it.latitude, it.longitude)
+                marker?.apply {
+                    position = latLng
+                    isVisible = true
+                }
             }
         }
     }

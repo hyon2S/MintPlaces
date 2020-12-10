@@ -8,6 +8,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Looper
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
 import androidx.activity.result.registerForActivityResult
@@ -76,6 +78,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         Log.d(TAG, "onCreate()")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_map)
+
+        // 툴바 설정
+        setSupportActionBar(findViewById(R.id.toolbar))
+        supportActionBar?.setDisplayShowTitleEnabled(false)
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
         // https://developer.android.com/training/location/request-updates#callback
@@ -238,6 +244,27 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                     isVisible = true
                 }
             }
+        }
+    }
+
+    // 툴바 메뉴 세팅
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.toolbar_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_my -> {
+                // MY설정 내용 띄우기
+                return true
+            }
+            R.id.action_search -> {
+                // 필터 검색설정 띄우기
+                return true
+            }
+            else ->
+                return super.onOptionsItemSelected(item)
         }
     }
 

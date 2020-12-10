@@ -13,6 +13,7 @@ import android.view.MenuItem
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
 import androidx.activity.result.registerForActivityResult
+import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.location.*
@@ -25,6 +26,7 @@ import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
+import kotlinx.android.synthetic.main.activity_map.*
 
 class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var map: GoogleMap
@@ -82,6 +84,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         // 툴바 설정
         setSupportActionBar(findViewById(R.id.toolbar))
         supportActionBar?.setDisplayShowTitleEnabled(false)
+        // 사이드바 설정
+        drawable_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
         // https://developer.android.com/training/location/request-updates#callback
@@ -256,11 +260,13 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_my -> {
-                // MY설정 내용 띄우기
+                drawable_layout.openDrawer(navigation_view)
+                // 내용물 세팅
                 return true
             }
             R.id.action_search -> {
-                // 필터 검색설정 띄우기
+                drawable_layout.openDrawer(navigation_view)
+                // 내용물 세팅
                 return true
             }
             else ->

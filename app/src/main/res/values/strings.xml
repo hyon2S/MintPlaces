@@ -8,4 +8,9 @@
     <!-- 툴바에 들어가는 메뉴 제목들 -->
     <string name="icon_my">MY</string>
     <string name="icon_search">매장찾기</string>
+
+    <string name="guest">비회원</string>
+
+    <string name="sign_in_sign_up">로그인/회원가입</string>
+    <string name="sign_out">로그아웃</string>
 </resources>

@@ -10,9 +10,7 @@
     tools:openDrawer="right"
     >
     <include
-        layout="@layout/main_map"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        layout="@layout/main_map" />
     <com.google.android.material.navigation.NavigationView
         style="@style/NavigationViewStyle"
         android:id="@+id/navigation_view"
@@ -20,17 +18,11 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         >
-        <include
-            android:id="@+id/navigation_my"
-            layout="@layout/navigation_my"
+        <LinearLayout
+            android:id="@+id/navigation_content"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone"/>
-        <include
-            android:id="@+id/navigation_search"
-            layout="@layout/navigation_search"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone"/>
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            />
     </com.google.android.material.navigation.NavigationView>
 </androidx.drawerlayout.widget.DrawerLayout>

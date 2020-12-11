@@ -10,7 +10,6 @@ import android.os.Looper
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
 import androidx.activity.result.registerForActivityResult
@@ -87,7 +86,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         supportActionBar?.setDisplayShowTitleEnabled(false)
         // 사이드바 설정
         drawable_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-        setNavigationMode(NavigationMode.NONE)
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
         // https://developer.android.com/training/location/request-updates#callback
@@ -276,22 +274,25 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+    private val myNavigationFragment: MyNavigationFragment by lazy { supportFragmentManager.findFragmentByTag(MY_FRAGMENT_TAG) as MyNavigationFragment?
+        ?: MyNavigationFragment.newInstance() }
+    private val searchNavigationFragment: SearchNavigationFragment by lazy { supportFragmentManager.findFragmentByTag(SEARCH_FRAGMENT_TAG) as SearchNavigationFragment?
+        ?: SearchNavigationFragment.newInstance() }
+
     // 네비게이션 드로어 안에 보여지는 내용물 설정
     private fun setNavigationMode(navigationMode: NavigationMode) {
-        when (navigationMode) {
-            NavigationMode.MY -> {
-                navigation_my.visibility = View.VISIBLE
-                navigation_search.visibility = View.GONE
+        val fragment =
+            when (navigationMode) {
+                NavigationMode.MY -> {
+                    myNavigationFragment
+                }
+                NavigationMode.SEARCH -> {
+                    searchNavigationFragment
+                }
             }
-            NavigationMode.SEARCH -> {
-                navigation_my.visibility = View.GONE
-                navigation_search.visibility = View.VISIBLE
-            }
-            NavigationMode.NONE -> {
-                navigation_my.visibility = View.GONE
-                navigation_search.visibility = View.GONE
-            }
-        }
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.navigation_content, fragment)
+            .commit()
     }
 
     companion object {
@@ -308,10 +309,12 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         )
 
         // 네비게이션 드로어 내용물의 모드
-        // NONE이라는 모드(아무 내용물도 없는 모드)가 진짜 필요한가..?
         enum class NavigationMode {
-            MY, SEARCH, NONE
+            MY, SEARCH
         }
+
+        const val MY_FRAGMENT_TAG = "myFragmentTag"
+        const val SEARCH_FRAGMENT_TAG = "searchFragmentTag"
     }
 
 }

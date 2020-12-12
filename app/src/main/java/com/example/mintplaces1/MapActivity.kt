@@ -260,13 +260,13 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_my -> {
-                drawable_layout.openDrawer(navigation_view)
                 setNavigationMode(NavigationMode.MY)
+                drawable_layout.openDrawer(navigation_view)
                 return true
             }
             R.id.action_search -> {
-                drawable_layout.openDrawer(navigation_view)
                 setNavigationMode(NavigationMode.SEARCH)
+                drawable_layout.openDrawer(navigation_view)
                 return true
             }
             else ->

@@ -13,4 +13,6 @@
 
     <string name="sign_in_sign_up">로그인/회원가입</string>
     <string name="sign_out">로그아웃</string>
+
+    <string name="username">%1$s 님</string>
 </resources>

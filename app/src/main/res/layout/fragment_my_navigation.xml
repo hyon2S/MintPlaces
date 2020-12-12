@@ -11,8 +11,10 @@
         />
     <!-- 비회원일때만 보이기 -->
     <include
+        android:id="@+id/guest"
         layout="@layout/navigation_my_guest" />
     <!-- 회원일때만 보이기 -->
     <include
+        android:id="@+id/member"
         layout="@layout/navigation_my_member" />
 </LinearLayout>

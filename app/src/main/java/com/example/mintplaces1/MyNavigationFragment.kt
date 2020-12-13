@@ -40,6 +40,8 @@ class MyNavigationFragment : Fragment() {
         Log.d(TAG, "signIn()")
         val user = Firebase.auth.currentUser
 
+        // 네트워크 연결되어있는지 확인부터 하기
+
         if (user != null) {
             Log.d(TAG, "이미 로그인 되어있습니다.")
         } else {
@@ -52,6 +54,7 @@ class MyNavigationFragment : Fragment() {
         AuthUI.getInstance().signOut(requireContext())
                 .addOnCompleteListener {
                     Log.d(TAG, "로그아웃되었습니다.")
+                    // 로그아웃되었다고 메시지 띄움.
                     setMemberMode()
                 }
     }

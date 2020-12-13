@@ -17,6 +17,8 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
+        // 인터넷 연결 안 되어있으면 인터넷 연결 안 돼있다고 하고 걍 종료!
+
         val user = Firebase.auth.currentUser
         if (user != null) {
             Log.d(TAG, "이미 로그인 되어있음.")

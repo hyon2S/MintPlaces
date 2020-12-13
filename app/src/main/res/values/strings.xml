@@ -15,4 +15,7 @@
     <string name="sign_out">로그아웃</string>
 
     <string name="username">%1$s 님</string>
+
+    <string name="change_username">닉네임변경</string>
+    <string name="success_message_change_username">닉네임이 변경되었습니다.</string>
 </resources>

@@ -26,6 +26,7 @@ class MyNavigationFragment : Fragment() {
 
         btn_sign_in_sign_up.setOnClickListener { signIn() }
         btn_sign_out.setOnClickListener { signOut() }
+        btn_change_username.setOnClickListener { changeUsername() }
     }
 
     // 화면이 다시 보일 때마다 멤버 모드를 새로고침
@@ -55,6 +56,10 @@ class MyNavigationFragment : Fragment() {
                     // 로그아웃되었다고 메시지 띄움.
                     setMemberMode()
                 }
+    }
+
+    private fun changeUsername() {
+        startActivity(Intent(requireActivity(), UsernameActivity::class.java))
     }
 
     // user가 회원인지 비회원인지에 따라 로그인/로그아웃 버튼 & 비회원/닉네임 이 보이게 함

@@ -8,8 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.firebase.ui.auth.AuthUI
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.fragment_my_navigation.*
 import kotlinx.android.synthetic.main.navigation_my_guest.*
 import kotlinx.android.synthetic.main.navigation_my_member.*
@@ -38,7 +36,7 @@ class MyNavigationFragment : Fragment() {
 
     private fun signIn() {
         Log.d(TAG, "signIn()")
-        val user = Firebase.auth.currentUser
+        val user = FirebaseUtil.getUser()
 
         // 네트워크 연결되어있는지 확인부터 하기
 
@@ -62,7 +60,7 @@ class MyNavigationFragment : Fragment() {
     // user가 회원인지 비회원인지에 따라 로그인/로그아웃 버튼 & 비회원/닉네임 이 보이게 함
     private fun setMemberMode() {
         Log.d(TAG, "setMemberMode()")
-        val user = Firebase.auth.currentUser
+        val user = FirebaseUtil.getUser()
 
         if (user != null) {
             guest.visibility = View.GONE

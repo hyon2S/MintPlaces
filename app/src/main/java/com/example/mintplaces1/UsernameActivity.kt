@@ -54,6 +54,6 @@ class UsernameActivity : AppCompatActivity() {
     }
 
     companion object {
-        const val TAG = "MyUsernameLog"
+        private const val TAG = "MyLogUsernameAct"
     }
 }

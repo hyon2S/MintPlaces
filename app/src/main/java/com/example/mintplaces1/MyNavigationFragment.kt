@@ -78,7 +78,7 @@ class MyNavigationFragment : Fragment() {
     }
 
     companion object {
-        const val TAG = "MyNavLog"
+        private const val TAG = "MyLogMyNavFrag"
         @JvmStatic
         fun newInstance() = MyNavigationFragment()
     }

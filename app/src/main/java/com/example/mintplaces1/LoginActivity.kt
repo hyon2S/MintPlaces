@@ -35,6 +35,6 @@ class LoginActivity : AppCompatActivity() {
     }
 
     companion object {
-        const val TAG = "MyLoginLog"
+        private const val TAG = "MyLogLoginAct"
     }
 }

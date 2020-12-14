@@ -127,10 +127,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         if (!Places.isInitialized())
             Places.initialize(baseContext, getString(R.string.google_map_api_key))
         // 장소 이름과 위도경도 정보를 사용할 예정임.
-        placeSearchFragment.setPlaceFields(listOf(Place.Field.NAME, Place.Field.LAT_LNG))
+        placeSearchFragment.setPlaceFields(listOf(Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS))
         placeSearchFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onPlaceSelected(place: Place) {
-                Log.i(TAG, "Place: ${place.name}, ${place.latLng}")
+                Log.i(TAG, "Place: ${place.name}, ${place.latLng}, ${place.address}")
                 // 마커 위치를 검색한 장소로 옮김
                 val latLng: LatLng = place.latLng!!
                 marker?.apply {

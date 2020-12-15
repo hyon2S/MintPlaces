@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.location.Location
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.example.mintplaces1.dto.PlaceInfo
 import com.google.android.gms.maps.CameraUpdate
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -21,7 +22,8 @@ class MapViewModel: ViewModel() {
     // 선택한 장소를 표시 할 마커. 장소 선택은 한 번에 한 군데밖에 안 되므로 마커 하나를 끝까지 사용.
     var marker: Marker? = null
     var currentLocation: Location? = null // 위치 추적 처음 시작할때는 null, 그 외에는 계속 새로 얻은 위치로 업데이트 시켜줌.
-    // address라는 변수도 추후 추가하기
+    // 마커에 찍힌 장소 정보 저장. 추후 firebase에 매장 정보를 저장할 때 사용할 예정.
+    var markerPlaceInfo: PlaceInfo? = null
 
     fun setMap(map: GoogleMap) {
         this.map = map
@@ -87,7 +89,8 @@ class MapViewModel: ViewModel() {
             position = latLng
             isVisible = true
         }
-        // name과 address는 장소를 Firebase에 저장할 때 사용할 예정
+        // 장소 정보 저장
+        markerPlaceInfo = PlaceInfo(name, latLng, address)
         // 카메라 이동
         val cameraUpdate: CameraUpdate = CameraUpdateFactory.newLatLng(latLng)
         map.animateCamera(cameraUpdate) // 순간이동 말고 스르륵 이동

@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import com.example.mintplaces1.database.DatabaseViewModel
 import com.example.mintplaces1.R
 import com.google.android.gms.common.api.Status
 import com.google.android.libraries.places.api.Places
@@ -20,6 +21,7 @@ import com.google.android.libraries.places.widget.listener.PlaceSelectionListene
 * */
 class PlaceSearchFragment : Fragment() {
     private val mapViewModel by lazy { ViewModelProvider(requireActivity()).get(MapViewModel::class.java) }
+    private val databaseViewModel by lazy { ViewModelProvider(requireActivity()).get(DatabaseViewModel::class.java) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_place_search, container, false)
@@ -42,8 +44,9 @@ class PlaceSearchFragment : Fragment() {
         autocompleteSupportFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onPlaceSelected(place: Place) {
                 Log.i(TAG, "Place: ${place.name}, ${place.latLng}, ${place.address}")
+                databaseViewModel.setPlace(place.name!!, place.latLng!!, place.address!!)
                 // 검색한 장소를 마커에 표시
-                mapViewModel.setMarker(place.name!!, place.latLng!!, place.address!!)
+                mapViewModel.setMarker(place.latLng!!)
             }
             override fun onError(status: Status) {
                 Log.i(TAG, "An error occurred: $status")

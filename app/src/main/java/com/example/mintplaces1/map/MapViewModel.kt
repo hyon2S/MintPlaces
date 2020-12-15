@@ -43,18 +43,7 @@ class MapViewModel: ViewModel() {
                     MarkerOptions()
                             .position(SEOUL_CITY_HALL_LATLNG) // 마커 위치는, 일단 걍 아무 위치나 있어야되니까 넣은 것으로 별 의미는 없음
                             .visible(false) // 처음 시작할때는 안 보이게 함.
-                            .title("")
             )
-            // 지도를 클릭하면 클릭한 위치로 마커를 옮김.
-            setOnMapClickListener {
-                Log.d(TAG, "맵 클릭")
-                val latLng = LatLng(it.latitude, it.longitude)
-                marker?.apply {
-                    position = latLng
-                    title = ""
-                    isVisible = true
-                }
-            }
         }
         // 시작할 때 카메라 설정
         setDefaultCameraLocation()
@@ -96,11 +85,9 @@ class MapViewModel: ViewModel() {
         // 마커 세팅
         marker?.apply {
             position = latLng
-            title = name
             isVisible = true
-            showInfoWindow()
         }
-        // 추후 address 관련 내용 추가
+        // name과 address는 장소를 Firebase에 저장할 때 사용할 예정
         // 카메라 이동
         val cameraUpdate: CameraUpdate = CameraUpdateFactory.newLatLng(latLng)
         map.animateCamera(cameraUpdate) // 순간이동 말고 스르륵 이동

@@ -7,6 +7,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.drawerlayout.widget.DrawerLayout
+import com.example.mintplaces1.database.MapButtonsFragment
 import com.example.mintplaces1.map.MapFragment
 import com.example.mintplaces1.map.PlaceSearchFragment
 import com.example.mintplaces1.network.NetworkConnectionCheckAdapter

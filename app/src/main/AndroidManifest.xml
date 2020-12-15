@@ -14,8 +14,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Mintplaces1">
-        <activity android:name=".UsernameActivity" />
-        <activity android:name=".LoginActivity" />
+        <activity android:name=".user.UsernameActivity" />
+        <activity android:name=".user.LoginActivity" />
         <activity android:name=".MapActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

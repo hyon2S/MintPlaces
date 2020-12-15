@@ -1,4 +1,4 @@
-package com.example.mintplaces1
+package com.example.mintplaces1.map
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -15,6 +15,8 @@ import androidx.activity.result.launch
 import androidx.activity.result.registerForActivityResult
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.example.mintplaces1.R
+import com.example.mintplaces1.network.NetworkConnectionCheckAdapter
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.*

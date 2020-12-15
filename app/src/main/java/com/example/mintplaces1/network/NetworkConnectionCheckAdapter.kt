@@ -1,4 +1,4 @@
-package com.example.mintplaces1
+package com.example.mintplaces1.network
 
 /*
 * 네트워크 연결 상태를 확인

@@ -1,9 +1,10 @@
-package com.example.mintplaces1
+package com.example.mintplaces1.user
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import com.example.mintplaces1.R
 import com.google.firebase.auth.UserProfileChangeRequest
 import kotlinx.android.synthetic.main.activity_username.*
 

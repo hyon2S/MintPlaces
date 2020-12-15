@@ -1,10 +1,11 @@
-package com.example.mintplaces1
+package com.example.mintplaces1.network
 
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
 import android.widget.Toast
+import com.example.mintplaces1.R
 
 // 네트워크 연결 상태 확인
 // 연결이 끊겨있으면 연결해주지는 않고, 연결 여부만 알려줌.

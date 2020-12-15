@@ -1,4 +1,4 @@
-package com.example.mintplaces1
+package com.example.mintplaces1.user
 
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth

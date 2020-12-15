@@ -1,8 +1,9 @@
-package com.example.mintplaces1
+package com.example.mintplaces1.user
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import com.example.mintplaces1.R
 import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase

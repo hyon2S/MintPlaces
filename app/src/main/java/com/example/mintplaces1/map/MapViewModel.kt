@@ -1,4 +1,4 @@
-package com.example.mintplaces1
+package com.example.mintplaces1.map
 
 import android.annotation.SuppressLint
 import android.location.Location

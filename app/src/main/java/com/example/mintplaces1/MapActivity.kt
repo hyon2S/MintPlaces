@@ -49,9 +49,12 @@ class MapActivity : AppCompatActivity(), NetworkConnectionCheckAdapter {
                 ?: MapFragment.newInstance()
         val placeSearchFragment: PlaceSearchFragment = supportFragmentManager.findFragmentById(R.id.layout_place_search) as PlaceSearchFragment?
                 ?: PlaceSearchFragment.newInstance()
+        val mapButtonsFragment: MapButtonsFragment = supportFragmentManager.findFragmentById(R.id.layout_buttons) as MapButtonsFragment?
+                ?: MapButtonsFragment.newInstance()
         supportFragmentManager.beginTransaction()
                 .replace(R.id.layout_map, mapFragment)
                 .replace(R.id.layout_place_search, placeSearchFragment)
+                .replace(R.id.layout_buttons, mapButtonsFragment)
                 .commit()
     }
 

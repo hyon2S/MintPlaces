@@ -21,9 +21,11 @@ class MapViewModel: ViewModel() {
     private lateinit var map: GoogleMap
     // 선택한 장소를 표시 할 마커. 장소 선택은 한 번에 한 군데밖에 안 되므로 마커 하나를 끝까지 사용.
     var marker: Marker? = null
-    var currentLocation: Location? = null // 위치 추적 처음 시작할때는 null, 그 외에는 계속 새로 얻은 위치로 업데이트 시켜줌.
     // 마커에 찍힌 장소 정보 저장. 추후 firebase에 매장 정보를 저장할 때 사용할 예정.
     var markerPlaceInfo: PlaceInfo? = null
+    // 사용자의 현재 위치를 (얻어올 수 있으면) 얻어와서 저장함.
+    // 위치 추적 처음 시작할때는 null, 그 외에는 계속 새로 얻은 위치로 업데이트 시켜줌.
+    var currentLocation: Location? = null
 
     fun setMap(map: GoogleMap) {
         this.map = map

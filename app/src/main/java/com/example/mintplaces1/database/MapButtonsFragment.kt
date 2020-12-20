@@ -12,6 +12,7 @@ import com.example.mintplaces1.R
 import com.example.mintplaces1.exception.NullUserException
 import com.example.mintplaces1.exception.PlaceInfoNotExistException
 import com.example.mintplaces1.user.FirebaseUtil
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.android.synthetic.main.fragment_map_buttons.*
 
@@ -48,12 +49,12 @@ class MapButtonsFragment : Fragment() {
 
                     databaseViewModel.addStore(user) // throws PlaceInfoNotExistException
                     Log.d(TAG, "매장 등록 성공")
-                    // 매장 등록 됐다고 메시지 띄우기
+                    Snackbar.make(requireActivity().findViewById(android.R.id.content), getString(R.string.success_message_add_store), Snackbar.LENGTH_SHORT).show()
                     // 등록한 매장을 다시 등록할 일은 없으니 편의상 저장한 place 정보를 삭제하기
                     databaseViewModel.initPlaceInfo()
                 } catch (e: Exception) {
                     if (e is NullUserException || e is PlaceInfoNotExistException) {
-                        // 둘 다 message로 확인창 띄우기 (확인버튼 눌러야만 없어지는 그거)
+                        Snackbar.make(requireActivity().findViewById(android.R.id.content), e.message!!, Snackbar.LENGTH_SHORT).show()
                     }
                     Log.e(TAG, "매장 추가 실패", e)
                 }

@@ -63,4 +63,6 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore-ktx'
     // viewmodel
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
+    // 스낵바
+    implementation "com.google.android.material:material:1.2.1"
 }

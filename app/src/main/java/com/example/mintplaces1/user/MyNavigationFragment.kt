@@ -1,5 +1,6 @@
 package com.example.mintplaces1.user
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -9,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.mintplaces1.R
 import com.firebase.ui.auth.AuthUI
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_my_navigation.*
 import kotlinx.android.synthetic.main.navigation_my_guest.*
 import kotlinx.android.synthetic.main.navigation_my_member.*
@@ -51,12 +53,25 @@ class MyNavigationFragment : Fragment() {
 
     private fun signOut() {
         Log.d(TAG, "signOut()")
-        AuthUI.getInstance().signOut(requireContext())
-                .addOnCompleteListener {
-                    Log.d(TAG, "로그아웃되었습니다.")
-                    // 로그아웃되었다고 메시지 띄움.
-                    setMemberMode()
-                }
+
+        // 진짜 로그아웃 할건지 물어보기
+        val builder = AlertDialog.Builder(context)
+        builder.apply {
+            setMessage(getString(R.string.confirm_message_sign_out))
+            setPositiveButton(getString(R.string.yes)) { _, _ ->
+                AuthUI.getInstance().signOut(requireContext())
+                    .addOnCompleteListener {
+                        Snackbar.make(requireActivity().findViewById(android.R.id.content), getString(R.string.success_message_sign_out), Snackbar.LENGTH_SHORT).show()
+                        setMemberMode()
+                    }
+            }
+            setNegativeButton(getString(R.string.no)) { _, _ ->
+                // 아무것도 안 함
+            }
+        }
+
+        builder.create().show()
+
     }
 
     private fun changeUsername() {

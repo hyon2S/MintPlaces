@@ -18,4 +18,9 @@
 
     <string name="change_username">닉네임변경</string>
     <string name="success_message_change_username">닉네임이 변경되었습니다.</string>
+
+    <string name="confirm_message_add_store">매장을 등록하시겠습니까?</string>
+
+    <string name="yes">예</string>
+    <string name="no">아니오</string>
 </resources>

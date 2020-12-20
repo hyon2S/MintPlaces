@@ -1,5 +1,6 @@
 package com.example.mintplaces1.database
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -13,7 +14,6 @@ import com.example.mintplaces1.exception.PlaceInfoNotExistException
 import com.example.mintplaces1.user.FirebaseUtil
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.android.synthetic.main.fragment_map_buttons.*
-import java.lang.Exception
 
 /*
 * 지도 하단에 있는 버튼을 관리.
@@ -38,21 +38,33 @@ class MapButtonsFragment : Fragment() {
         Log.d(TAG, "addStore()")
 
         // 진짜 매장 등록 할 건지 물어보기. yes면 계속 진행.
+        val builder = AlertDialog.Builder(context)
+        builder.apply {
+            setMessage(getString(R.string.confirm_message_add_store))
+            setPositiveButton(getString(R.string.yes)) { _, _ ->
+                Log.d(TAG, "매장을 등록합니다.")
+                try {
+                    val user: FirebaseUser = FirebaseUtil.getUser() ?: throw NullUserException()
 
-        try {
-            val user: FirebaseUser = FirebaseUtil.getUser() ?: throw NullUserException()
-
-            databaseViewModel.addStore(user) // throws PlaceInfoNotExistException
-            Log.d(TAG, "매장 등록 성공")
-            // 매장 등록 됐다고 메시지 띄우기
-            // 등록한 매장을 다시 등록할 일은 없으니 편의상 저장한 place 정보를 삭제하기
-            databaseViewModel.initPlaceInfo()
-        } catch (e: Exception) {
-            if (e is NullUserException || e is PlaceInfoNotExistException) {
-                // 둘 다 message로 확인창 띄우기 (확인버튼 눌러야만 없어지는 그거)
+                    databaseViewModel.addStore(user) // throws PlaceInfoNotExistException
+                    Log.d(TAG, "매장 등록 성공")
+                    // 매장 등록 됐다고 메시지 띄우기
+                    // 등록한 매장을 다시 등록할 일은 없으니 편의상 저장한 place 정보를 삭제하기
+                    databaseViewModel.initPlaceInfo()
+                } catch (e: Exception) {
+                    if (e is NullUserException || e is PlaceInfoNotExistException) {
+                        // 둘 다 message로 확인창 띄우기 (확인버튼 눌러야만 없어지는 그거)
+                    }
+                    Log.e(TAG, "매장 추가 실패", e)
+                }
             }
-            Log.e(TAG, "매장 추가 실패", e)
+            setNegativeButton(getString(R.string.no)) { _, _ ->
+                Log.d(TAG, "매장 등록 취소")
+                // 아무것도 안 함
+            }
         }
+
+        builder.create().show()
     }
 
     companion object {

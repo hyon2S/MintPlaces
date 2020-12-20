@@ -59,6 +59,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth-ktx'
     implementation 'com.firebaseui:firebase-ui-auth:6.4.0'
     implementation 'com.google.android.gms:play-services-auth:19.0.0'
+    // firestore
+    implementation 'com.google.firebase:firebase-firestore-ktx'
     // viewmodel
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
 }

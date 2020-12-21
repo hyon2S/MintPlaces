@@ -8,6 +8,7 @@ import com.google.android.gms.maps.CameraUpdate
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 
@@ -23,6 +24,8 @@ class MapViewModel: ViewModel() {
     // 사용자의 현재 위치를 (얻어올 수 있으면) 얻어와서 저장함.
     // 위치 추적 처음 시작할때는 null, 그 외에는 계속 새로 얻은 위치로 업데이트 시켜줌.
     var currentLocation: Location? = null
+    // 우리 나라 범위. 지도가 표시할 수 있는 범위를 우리나라로 제한하기 위해 사용.
+    private val latLngBounds = LatLngBounds(SOUTH_KOREA_SOUTH_WEST, SOUTH_KOREA_NORTH_EAST)
 
     fun setMap(map: GoogleMap) {
         this.map = map
@@ -45,6 +48,9 @@ class MapViewModel: ViewModel() {
                             .position(SEOUL_CITY_HALL_LATLNG) // 마커 위치는, 일단 걍 아무 위치나 있어야되니까 넣은 것으로 별 의미는 없음
                             .visible(false) // 처음 시작할때는 안 보이게 함.
             )
+
+            // 지도에서 우리나라만 볼 수 있게 제한
+            setLatLngBoundsForCameraTarget(latLngBounds)
         }
         // 시작할 때 카메라 설정
         setDefaultCameraLocation()
@@ -99,5 +105,9 @@ class MapViewModel: ViewModel() {
         // 지도 처음 시작 위치를 서울시청으로 설정.
         val SEOUL_CITY_HALL_LATLNG: LatLng = LatLng(37.566669, 126.978406)
         const val DEFAULT_CAMERA_ZOOM: Float = 16.0f
+
+        // 우리나라 동북, 서남 좌표
+        val SOUTH_KOREA_NORTH_EAST = LatLng(38.5, 131.9)
+        val SOUTH_KOREA_SOUTH_WEST = LatLng(33.0, 125.0)
     }
 }

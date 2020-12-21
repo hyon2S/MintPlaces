@@ -38,6 +38,8 @@ class PlaceSearchFragment : Fragment() {
             ?: AutocompleteSupportFragment.newInstance().also {
                 childFragmentManager.beginTransaction().replace(R.id.frg_auto_complete_place_search, it).commit()
             }
+        autocompleteSupportFragment.setCountry("KR") // 검색 장소를 우리나라로 제한
+
         // place 초기화. 안 하니까 오류생김.
         if (!Places.isInitialized())
             Places.initialize(requireContext(), getString(R.string.google_map_api_key))

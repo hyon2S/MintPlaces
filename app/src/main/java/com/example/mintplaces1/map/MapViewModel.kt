@@ -52,6 +52,15 @@ class MapViewModel: ViewModel() {
 
             // 지도에서 우리나라만 볼 수 있게 제한
             setLatLngBoundsForCameraTarget(latLngBounds)
+
+            setOnCameraIdleListener {
+                // 카메라 이동이 멈추면 카메라 범위 내에 있는 매장 정보를 얻어오기
+                val farRightLatLng = map.projection.visibleRegion.farRight
+                val nearLeftLatLng = map.projection.visibleRegion.nearLeft
+                Log.d(TAG, "카메라 범위: ${farRightLatLng}, ${nearLeftLatLng}")
+
+                // 현재 카메라가 보여주는 범위 안에 있는 매장 정보 얻어오기
+            }
         }
         // 시작할 때 카메라 설정
         setDefaultCameraLocation()

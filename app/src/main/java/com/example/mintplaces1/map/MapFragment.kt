@@ -96,6 +96,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 for (location in locationResult.locations){
                     // 그나저나 location이 null일수도있나?
                     mapViewModel.updateCurrentLocation(location)
+                    // 여기서 우리나라 벗어난 예외가 발생하면 아예 locationUpdate를 중단시켜야 됨.
                 }
             }
         }

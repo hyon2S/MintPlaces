@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.location.Location
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.example.mintplaces1.exception.LatLngBoundException
 import com.google.android.gms.maps.CameraUpdate
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -79,6 +80,8 @@ class MapViewModel: ViewModel() {
         if (currentLocation == null) {
             // 맨 처음에 위치를 받아올 때는 현재 위치로 카메라 이동하고 시작함.
             val currentLatLng = LatLng(location.latitude, location.longitude)
+            // 우리나라 범위 밖이면 예외를 발생시켜서 중단시킴.
+            if (!latLngBounds.contains(currentLatLng)) throw LatLngBoundException()
             val cameraUpdate: CameraUpdate = CameraUpdateFactory.newLatLng(currentLatLng)
             map.moveCamera(cameraUpdate)
         }
@@ -89,6 +92,9 @@ class MapViewModel: ViewModel() {
 
     // 지정한 장소를 마커에 표시
     fun setMarker(latLng: LatLng) {
+        // 우리나라 범위 밖이면 예외를 발생시켜서 중단시킴.
+        if (!latLngBounds.contains(latLng)) throw LatLngBoundException()
+
         // 마커 세팅
         marker?.apply {
             position = latLng

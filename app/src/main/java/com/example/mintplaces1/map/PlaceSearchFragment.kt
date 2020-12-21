@@ -9,11 +9,13 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.example.mintplaces1.database.DatabaseViewModel
 import com.example.mintplaces1.R
+import com.example.mintplaces1.exception.LatLngBoundException
 import com.google.android.gms.common.api.Status
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
+import com.google.android.material.snackbar.Snackbar
 
 /*
 * 장소를 검색할 수 있는 검색창 AutocompleteSupportFragment를 관리.
@@ -44,9 +46,13 @@ class PlaceSearchFragment : Fragment() {
         autocompleteSupportFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onPlaceSelected(place: Place) {
                 Log.i(TAG, "Place: ${place.name}, ${place.latLng}, ${place.address}")
-                databaseViewModel.setPlace(place.name!!, place.latLng!!, place.address!!)
-                // 검색한 장소를 마커에 표시
-                mapViewModel.setMarker(place.latLng!!)
+                try {
+                    // 검색한 장소를 마커에 표시
+                    mapViewModel.setMarker(place.latLng!!) // throws 우리나라범위예외
+                    databaseViewModel.setPlace(place.name!!, place.latLng!!, place.address!!)
+                } catch(e: LatLngBoundException) {
+                    Snackbar.make(requireActivity().findViewById(android.R.id.content), e.message!!, Snackbar.LENGTH_SHORT).show()
+                }
             }
             override fun onError(status: Status) {
                 Log.i(TAG, "An error occurred: $status")

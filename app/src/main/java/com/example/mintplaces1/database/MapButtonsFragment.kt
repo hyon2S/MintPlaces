@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.example.mintplaces1.R
 import com.example.mintplaces1.exception.NullUserException
-import com.example.mintplaces1.exception.PlaceInfoNotExistException
+import com.example.mintplaces1.exception.StoreInfoNotExistException
 import com.example.mintplaces1.user.FirebaseUtil
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseUser
@@ -47,14 +47,14 @@ class MapButtonsFragment : Fragment() {
                 try {
                     val user: FirebaseUser = FirebaseUtil.getUser() ?: throw NullUserException()
 
-                    databaseViewModel.addStore(user) // throws PlaceInfoNotExistException
+                    databaseViewModel.addStore(user) // throws StoreInfoNotExistException
                     Log.d(TAG, "매장 등록 성공")
                     Snackbar.make(requireActivity().findViewById(android.R.id.content), getString(R.string.success_message_add_store), Snackbar.LENGTH_SHORT).show()
                     // 등록한 매장을 다시 등록할 일은 없으니 편의상 저장한 place 정보를 삭제하기
                     databaseViewModel.initPlaceInfo()
                     // mapViewModel의 marker도 초기화시켜야될것같은데
                 } catch (e: Exception) {
-                    if (e is NullUserException || e is PlaceInfoNotExistException) {
+                    if (e is NullUserException || e is StoreInfoNotExistException) {
                         Snackbar.make(requireActivity().findViewById(android.R.id.content), e.message!!, Snackbar.LENGTH_SHORT).show()
                     }
                     Log.e(TAG, "매장 추가 실패", e)

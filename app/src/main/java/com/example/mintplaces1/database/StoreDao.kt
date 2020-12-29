@@ -1,69 +1,57 @@
 package com.example.mintplaces1.database
 
-import com.example.mintplaces1.dto.LocationInfo
-import com.example.mintplaces1.dto.PlaceInfoServer
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.DocumentReference
+import com.example.mintplaces1.dto.MarkerInfoServer
+import com.example.mintplaces1.dto.PlaceInfo
+import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 /*
 C: collection, D: document, F: Field
 
+(위도 경도별로 매장의 마커 정보를 보관)
+(복잡하게 위도 컬렉션, 경도 컬렉션을 만드는 대신, 하나의 컬렉션 밑에 모든 MarkerInfo의 문서들을 모아놓고 geoPoint로 쿼리를 하는 방법도 시도해봤으나,
+GeoPoint가 소수점 이하는 제대로 대소비교를 하지 못해 사용하지 못함.)
+C: byLat
+    D: lat1(원래 Double인 위도를 소수점 둘째짜리까지 정수화 시킴. 예: 33.123455... -> 3312)
+    	F: 내용은 중요하지않지만 문서 자체가 존재하기 하기 위해 들어가는 형식적인 필드
+        C: byLng
+        	D: lng1(원래 Double인 경도를 소수점 둘째짜리까지 정수화 시킴)
+		    	F: 내용은 중요하지않지만 문서 자체가 존재하기 하기 위해 들어가는 형식적인 필드
+	        		C: markerInfo
+		        		D: MarkerInfo1(autoID)
+                                                F: name String
+                                                F: geoPoint GeoPoint
+                                                F: docRef DocumentReference (컬렉션 store 하위에 있는 각각의 store들의 DocumentReference)
+		        		D: MarkerInfo2(autoID)
+                                                F: name String
+                                                F: geoPoint GeoPoint
+                                                F: docRef DocumentReference (컬렉션 store 하위에 있는 각각의 store들의 DocumentReference)
+        	D: lng2
+                    (이하생략)
+    D: lat2
+        (이하생략)
+
 C: store
-    D: storeByLatitude
-    (지도에 매장을 마커로 표시할 때 빠르게 가져올 수 있도록 위치 정보와 reference만으로 이루어진 정보를 보관)
-        C: 37.5 (37.5 <= 위도 < 37.6 인 매장들)
-            D: storeByLongitude
-                C: 126.9 (126.9 <= 경도 < 127.0 인 매장들)
-                    D: store1(autoID)
-                        F: geoPoint GeoPoint
-                        F: document Reference
-                    D: store2(autoID)
-                        F: geoPoint GeoPoint
-                        F: document Reference
-                C: 127.0
-                    D: store1(autoID)
-                        F: geoPoint GeoPoint
-                        F: document Reference
-        C: 35.2
-            D: storeByLongitude
-                C: 128.9
-                    D: store1(autoID)
-                        F: geoPoint GeoPoint
-                        F: document Reference
-                    D: store2(autoID)
-                        F: geoPoint GeoPoint
-                        F: document Reference
-                C: 126.8
-                    D: store1(autoID)
-                        F: geoPoint GeoPoint
-                        F: document Reference
     D: store1(autoID)
         C: placeInfo
-            D: placeInfoList(autoID)
-                F: list Array<Reference>
-                (placeInfo를 수정할 때 마다 기존 문서를 변경하는 것이 아닌, 새 문서가 하나씩 추가됨.
-                가장 index가 큰 것이 가장 최근에 생성된 문서.)
+            D: placeInfoList
+                F: list Array<Reference> (placeInfo가 하나씩 추가될때마다 array에 순서대로 하나씩 넣어줌. 가장 index가 큰 것이 가장 최근에 생성된 문서.)
             D: placeInfo1(autoID)
                 F: name String
                 F: address String
-                F: geoPoint GeoPoint
                 F: editInfo Map
                     editor String (uid)
                     timestamp TimeStamp
             D: placeInfo2(autoID)
                 F: name String
                 F: address String
-                F: geoPoint GeoPoint
                 F: editInfo Map
                     editor String (uid)
                     timestamp TimeStamp
         C: storeType
-            D: storeTypeList(autoID)
+            D: storeTypeList
                 F: list Array<Reference>
-                (storeType을 수정할 때 마다 기존 문서를 변경하는 것이 아닌, 새 문서가 하나씩 추가됨.
-                가장 index가 큰 것이 가장 최근에 생성된 문서.)
             D: storeType1(autoID)
                 (이하생략)
             D: storeType2(autoID)
@@ -76,45 +64,49 @@ class StoreDao {
     private val db = Firebase.firestore
 
     // 매장을 db에 추가하고, 새 매장 정보가 저장되어있는 DocumentReference를 반환
-    fun addPlaceInfo(placeInfoServer: PlaceInfoServer): DocumentReference {
-        val newStoreDocument: DocumentReference = db.collection("store").document()
-
-        val placeInfoCollection: CollectionReference = newStoreDocument.collection("placeInfo")
-
-        val placeInfoListDocument: DocumentReference = placeInfoCollection.document("placeInfoList")
-
+    fun addPlaceInfo(PlaceInfo: PlaceInfo): DocumentReference {
+        val newStoreDocument: DocumentReference = db.collection(STORE).document()
+        val placeInfoCollection: CollectionReference = newStoreDocument.collection(PLACE_INFO)
+        val placeInfoListDocument: DocumentReference = placeInfoCollection.document(PLACE_INFO_LIST)
         val newPlaceInfoDocument: DocumentReference = placeInfoCollection.document()
 
         db.runTransaction {
             it.apply {
-                set(newPlaceInfoDocument, placeInfoServer)
-                set(placeInfoListDocument, hashMapOf("list" to listOf(newPlaceInfoDocument)))
+                set(newPlaceInfoDocument, PlaceInfo)
+                set(placeInfoListDocument, hashMapOf(LIST to listOf(newPlaceInfoDocument)))
             }
         } // addOnSuccess, addOnFailure 해야되나..?
         return newStoreDocument
     }
 
     // 위도, 경도 별로 정리된 문서에 새 매장 문서를 추가
-    fun addStoreToList(locationInfo: LocationInfo) {
-        val byLat: String = to1Decimal(locationInfo.geoPoint.latitude)
-        val byLng: String = to1Decimal(locationInfo.geoPoint.longitude)
+    fun addStoreToList(MarkerInfoServer: MarkerInfoServer, latIndex: Int, lngIndex: Int) {
+        val latDocument = db.collection(BY_LAT).document(latIndex.toString())
+        val lngDocument = latDocument.collection(BY_LNG).document(lngIndex.toString())
+        val markerInfoDocument = lngDocument.collection(MARKER_INFO).document()
 
-        val documentRef = db.collection("store").document("storeByLatitude").collection(byLat)
-                .document("storeByLongitude").collection(byLng)
-                .document()
         db.runTransaction {
-            it.set(documentRef, locationInfo)
+            it.apply {
+                set(latDocument, dummyData)
+                set(lngDocument, dummyData)
+                set(markerInfoDocument, MarkerInfoServer)
+            }
         }
-    }
-
-    // double을 소수점 첫째자리까지만 잘라서 (반올림 아님) String 형태로 반환
-    private fun to1Decimal(double: Double): String {
-        val string = double.toString()
-        val index = string.indexOf('.')
-        return string.substring(0, index + 2)
     }
 
     companion object {
         private const val TAG = "MyLogStoreDao"
+
+        // firestore 컬렉션, 문서, 필드 이름들
+        private const val STORE = "store"
+        private const val PLACE_INFO = "placeInfo"
+        private const val PLACE_INFO_LIST = "placeInfoList"
+        private const val LIST = "list"
+        private const val BY_LAT = "byLat"
+        private const val BY_LNG = "byLng"
+        private const val MARKER_INFO = "markerInfo"
+
+        // 아무 필드 없는 문서는 존재를 안하니까 어쩔수없이넣은 의미 없는 데이터.
+        private val dummyData = hashMapOf("dummy" to 1)
     }
 }

@@ -11,6 +11,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.mintplaces1.R
 import com.example.mintplaces1.exception.NullUserException
 import com.example.mintplaces1.exception.StoreInfoNotExistException
+import com.example.mintplaces1.map.MapViewModel
+import com.example.mintplaces1.map.MapViewModelFactory
 import com.example.mintplaces1.user.FirebaseUtil
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseUser
@@ -21,6 +23,7 @@ import kotlinx.android.synthetic.main.fragment_map_buttons.*
 * */
 class MapButtonsFragment : Fragment() {
     private val databaseViewModel by lazy { ViewModelProvider(requireActivity()).get(DatabaseViewModel::class.java) }
+    private val mapViewModel by lazy { ViewModelProvider(requireActivity(), MapViewModelFactory(databaseViewModel)).get(MapViewModel::class.java) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {

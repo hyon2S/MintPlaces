@@ -1,9 +1,13 @@
 package com.example.mintplaces1.database
 
+import android.util.Log
 import com.example.mintplaces1.dto.*
+import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.GeoPoint
+import com.google.firebase.firestore.ktx.toObject
 
 class Repository {
     private val storeDao = StoreDao()
@@ -34,6 +38,34 @@ class Repository {
 
         // 위도, 경도 별로 정리된 문서에 새 매장 문서를 추가
         storeDao.addStoreToList(markerInfoServer, (lat * LAT_LNG_INDEX_DIGIT).toInt(), (lng * LAT_LNG_INDEX_DIGIT).toInt())
+    }
+
+    // 지정된 위도, 경도 범위 안에서 등록된 매장들을 db에서 가져옴
+    // Double을 대소비교하는 것을 피하기 위해 Int화 해서 작업
+    suspend fun getStoresList(farRightLatLng: LatLng, nearLeftLatLng: LatLng): List<MarkerInfoClient> {
+        Log.d(TAG, "getStoresList()")
+
+        val fromLat: Int = (nearLeftLatLng.latitude * LAT_LNG_INDEX_DIGIT).toInt()
+        val toLat: Int = (farRightLatLng.latitude * LAT_LNG_INDEX_DIGIT).toInt()
+        val fromLng: Int = (nearLeftLatLng.longitude * LAT_LNG_INDEX_DIGIT).toInt()
+        val toLng: Int = (farRightLatLng.longitude * LAT_LNG_INDEX_DIGIT).toInt()
+
+        val documentSnapshotList: List<DocumentSnapshot> = storeDao.getStores(fromLat, toLat, fromLng, toLng)
+        Log.d(TAG, "${documentSnapshotList.size}")
+
+        // documentSnapshot에서 필요한 정보를 빼내서 storesMarkerInfoList에 담음
+        val markerInfoClientList = mutableListOf<MarkerInfoClient>()
+        for (documentSnapshot in documentSnapshotList) {
+            Log.d(TAG, "$nearLeftLatLng ~ $farRightLatLng: $documentSnapshot.toString()")
+            val markerInfoServer: MarkerInfoServer = documentSnapshot.toObject<MarkerInfoServer>() ?: break
+            Log.d(TAG, "markerInfo 얻음")
+
+            // MapUtil에 geoPoint <-> LatLng 하면 좋을듯
+            val latLng = LatLng(markerInfoServer.geoPoint!!.latitude, markerInfoServer.geoPoint!!.longitude)
+            val storesMarkerInfo = MarkerInfoClient(latLng, markerInfoServer.name!!, markerInfoServer.storeDocument!!)
+            markerInfoClientList.add(storesMarkerInfo)
+        }
+        return markerInfoClientList
     }
 
     companion object {

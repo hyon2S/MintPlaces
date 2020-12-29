@@ -4,21 +4,22 @@ import android.annotation.SuppressLint
 import android.location.Location
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.mintplaces1.database.DatabaseViewModel
+import com.example.mintplaces1.dto.MarkerInfoClient
 import com.example.mintplaces1.exception.LatLngBoundException
 import com.google.android.gms.maps.CameraUpdate
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.LatLngBounds
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
+import kotlinx.coroutines.launch
 
 /*
 * 지도, 마커, 사용자의 현재위치 등... 지도와 지도의 구성요소들을 관리.
 * MapFragment와 PlaceSearchFragment에서 MapViewModel을 사용함.
 * 마커 추가, 카메라 이동 등의 기능이 모두 여기서 이루어짐.
 * */
-class MapViewModel: ViewModel() {
+class MapViewModel(private val databaseViewModel: DatabaseViewModel): ViewModel() {
     private lateinit var map: GoogleMap
     // 선택한 장소를 표시 할 마커. 장소 선택은 한 번에 한 군데밖에 안 되므로 마커 하나를 끝까지 사용.
     var marker: Marker? = null
@@ -60,10 +61,25 @@ class MapViewModel: ViewModel() {
                 Log.d(TAG, "카메라 범위: ${farRightLatLng}, ${nearLeftLatLng}")
 
                 // 현재 카메라가 보여주는 범위 안에 있는 매장 정보 얻어오기
+                showStores(farRightLatLng, nearLeftLatLng)
             }
         }
         // 시작할 때 카메라 설정
         setDefaultCameraLocation()
+    }
+
+    // 지정된 위도, 경도 범위 안에서 등록된 매장들을 db에서 가져옴
+    private fun showStores(farRightLatLng: LatLng, nearLeftLatLng: LatLng) {
+        Log.d(TAG, "showStores()")
+
+        // 중간에 다른 변수가 생기면 scope 자체를 취소할 수 있게 job으로 만듦
+        viewModelScope.launch {
+            val markerInfoClientList: List<MarkerInfoClient> = databaseViewModel.getStoresList(farRightLatLng, nearLeftLatLng)
+            for (marker in markerInfoClientList) {
+                // 마커 만들기
+            }
+        }
+        Log.d(TAG, "showStores 종료")
     }
 
     // 지도의 기본 카메라 시작 위치를 서울시청으로 설정

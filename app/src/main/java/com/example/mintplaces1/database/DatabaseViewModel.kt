@@ -2,6 +2,7 @@ package com.example.mintplaces1.database
 
 import androidx.lifecycle.ViewModel
 import com.example.mintplaces1.dto.StoreInfo
+import com.example.mintplaces1.dto.MarkerInfoClient
 import com.example.mintplaces1.exception.StoreInfoNotExistException
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.auth.FirebaseUser
@@ -29,5 +30,13 @@ class DatabaseViewModel: ViewModel() {
         } catch (e: NullPointerException) {
             throw StoreInfoNotExistException()
         }
+    }
+
+    // 지정된 위도, 경도 범위 안에서 등록된 매장들을 db에서 가져옴
+    suspend fun getStoresList(farRightLatLng: LatLng, nearLeftLatLng: LatLng): List<MarkerInfoClient> =
+            repository.getStoresList(farRightLatLng, nearLeftLatLng)
+
+    companion object {
+        private const val TAG = "MyLogDbVM"
     }
 }

@@ -5,6 +5,7 @@ import com.example.mintplaces1.dto.PlaceInfo
 import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.tasks.await
 
 /*
 C: collection, D: document, F: Field
@@ -14,20 +15,20 @@ C: collection, D: document, F: Field
 GeoPoint가 소수점 이하는 제대로 대소비교를 하지 못해 사용하지 못함.)
 C: byLat
     D: lat1(원래 Double인 위도를 소수점 둘째짜리까지 정수화 시킴. 예: 33.123455... -> 3312)
-    	F: 내용은 중요하지않지만 문서 자체가 존재하기 하기 위해 들어가는 형식적인 필드
+        F: 내용은 중요하지않지만 문서 자체가 존재하기 하기 위해 들어가는 형식적인 필드
         C: byLng
-        	D: lng1(원래 Double인 경도를 소수점 둘째짜리까지 정수화 시킴)
-		    	F: 내용은 중요하지않지만 문서 자체가 존재하기 하기 위해 들어가는 형식적인 필드
-	        		C: markerInfo
-		        		D: MarkerInfo1(autoID)
+            D: lng1(원래 Double인 경도를 소수점 둘째짜리까지 정수화 시킴)
+                F: 내용은 중요하지않지만 문서 자체가 존재하기 하기 위해 들어가는 형식적인 필드
+                    C: markerInfo
+                        D: MarkerInfo1(autoID)
                                                 F: name String
                                                 F: geoPoint GeoPoint
                                                 F: docRef DocumentReference (컬렉션 store 하위에 있는 각각의 store들의 DocumentReference)
-		        		D: MarkerInfo2(autoID)
+                        D: MarkerInfo2(autoID)
                                                 F: name String
                                                 F: geoPoint GeoPoint
                                                 F: docRef DocumentReference (컬렉션 store 하위에 있는 각각의 store들의 DocumentReference)
-        	D: lng2
+            D: lng2
                     (이하생략)
     D: lat2
         (이하생략)
@@ -93,6 +94,50 @@ class StoreDao {
             }
         }
     }
+
+    suspend fun getStores(fromLat: Int, toLat: Int, fromLng: Int, toLng: Int): List<DocumentSnapshot> {
+        val querySnapshotList = getQuerySnapshot(fromLat, toLat, fromLng, toLng)
+
+        // 위에서 얻은 위도 fromLat ~ toLat, 경도 fromLng ~ toLng인 쿼리 스냅샷에서
+        // 하위 문서들을 모두 추출해서 하나의 list에 옮겨담음.
+        val documentList = mutableListOf<DocumentSnapshot>()
+        for (querySnapshot in querySnapshotList) {
+            documentList += querySnapshot.documents
+        }
+        return documentList
+    }
+
+    // 위도 fromLat ~ toLat, 경도 fromLng ~ toLng 사이의 매장 문서를 담고있는 쿼리스냅샷을 얻어옴
+    private suspend fun getQuerySnapshot(fromLat: Int, toLat: Int, fromLng: Int, toLng: Int): List<QuerySnapshot> {
+        val querySnapshotList = mutableListOf<QuerySnapshot>()
+
+        // 위도 fromLat ~ toLat
+        val latQuerySnapshot: QuerySnapshot = getLatQuerySnapshot(fromLat, toLat)
+
+        for (latDocumentSnapshot in latQuerySnapshot.documents) {
+            // 경도 fromLng ~ toLng
+            val lngQuerySnapshot: QuerySnapshot = getLngQuerySnapshot(fromLng, toLng, latDocumentSnapshot.reference)
+            for (lngDocumentSnapshot in lngQuerySnapshot.documents) {
+                val markerInfoQuerySnapshot: QuerySnapshot = lngDocumentSnapshot.reference.collection(MARKER_INFO).get().await()
+                querySnapshotList.add(markerInfoQuerySnapshot)
+            }
+        }
+        return querySnapshotList
+    }
+
+    private suspend fun getLatQuerySnapshot(fromLat: Int, toLat: Int): QuerySnapshot =
+            db.collection(BY_LAT)
+                    .whereGreaterThanOrEqualTo(FieldPath.documentId(), fromLat.toString())
+                    .whereLessThanOrEqualTo(FieldPath.documentId(), toLat.toString())
+                    .get()
+                    .await()
+
+    private suspend fun getLngQuerySnapshot(fromLng: Int, toLng: Int, latDocumentReference: DocumentReference): QuerySnapshot =
+            latDocumentReference.collection(BY_LNG)
+                    .whereGreaterThanOrEqualTo(FieldPath.documentId(), fromLng.toString())
+                    .whereLessThanOrEqualTo(FieldPath.documentId(), toLng.toString())
+                    .get()
+                    .await()
 
     companion object {
         private const val TAG = "MyLogStoreDao"

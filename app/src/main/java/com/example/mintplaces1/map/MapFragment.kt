@@ -16,6 +16,7 @@ import androidx.activity.result.registerForActivityResult
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.mintplaces1.R
+import com.example.mintplaces1.database.DatabaseViewModel
 import com.example.mintplaces1.network.NetworkConnectionCheckAdapter
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
@@ -27,7 +28,9 @@ import com.google.android.gms.maps.*
 * 사용자의 요청에 따라 현재 위치를 gps에서 받아오는 기능을 설정.
 * */
 class MapFragment : Fragment(), OnMapReadyCallback {
-    private val mapViewModel by lazy { ViewModelProvider(requireActivity()).get(MapViewModel::class.java) }
+    private val databaseViewModel by lazy { ViewModelProvider(requireActivity()).get(
+        DatabaseViewModel::class.java) }
+    private val mapViewModel by lazy { ViewModelProvider(requireActivity(), MapViewModelFactory(databaseViewModel)).get(MapViewModel::class.java) }
 
     // 사용자의 실시간 위치를 지도에 업데이트
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient

@@ -51,7 +51,7 @@ class PlaceSearchFragment : Fragment() {
                 try {
                     // 검색한 장소를 마커에 표시
                     mapViewModel.setMarker(place.latLng!!) // throws 우리나라범위예외
-                    databaseViewModel.setPlace(place.name!!, place.latLng!!, place.address!!)
+                    databaseViewModel.setStoreInfo(place.name!!, place.latLng!!, place.address!!)
                 } catch(e: LatLngBoundException) {
                     Snackbar.make(requireActivity().findViewById(android.R.id.content), e.message!!, Snackbar.LENGTH_SHORT).show()
                 }

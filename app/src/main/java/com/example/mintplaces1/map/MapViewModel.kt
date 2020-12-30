@@ -58,6 +58,14 @@ class MapViewModel(private val databaseViewModel: DatabaseViewModel): ViewModel(
                             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
             )
 
+            setOnMarkerClickListener {
+                // 장소 검색 마커는 제목이 없으니까 db에서 받아온 매장 이름을 보여주는 용도로만 사용.
+                it.showInfoWindow()
+                true
+                // 마커 중심으로 카메라가 이동 못 하게 누르는 동작을 소모함.
+                // 마커 누를때마다 카메라가 이동하면 db에서 매장 로딩을 다시 해와야되니까..
+            }
+
             // 지도에서 우리나라만 볼 수 있게 제한
             setLatLngBoundsForCameraTarget(latLngBounds)
 

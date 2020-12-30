@@ -55,6 +55,7 @@ class MapViewModel(private val databaseViewModel: DatabaseViewModel): ViewModel(
                     MarkerOptions()
                             .position(SEOUL_CITY_HALL_LATLNG) // 마커 위치는, 일단 걍 아무 위치나 있어야되니까 넣은 것으로 별 의미는 없음
                             .visible(false) // 처음 시작할때는 안 보이게 함.
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
             )
 
             // 지도에서 우리나라만 볼 수 있게 제한
@@ -97,6 +98,7 @@ class MapViewModel(private val databaseViewModel: DatabaseViewModel): ViewModel(
                 .position(markerInfoClient.latLng)
                 .title(markerInfoClient.name)
                 .visible(true)
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
         // MarkerInfoClient의 DocumentReference는 추후 사용 방법 생각해보기
 
         // 마커 추후 삭제하려면 전역변수 리스트에 저장해두기. Marker.remove()

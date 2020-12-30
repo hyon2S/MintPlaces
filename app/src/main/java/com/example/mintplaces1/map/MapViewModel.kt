@@ -175,11 +175,11 @@ class MapViewModel(private val databaseViewModel: DatabaseViewModel): ViewModel(
         private const val TAG = "MyLogMapVM"
 
         // 지도 처음 시작 위치를 서울시청으로 설정.
-        val SEOUL_CITY_HALL_LATLNG: LatLng = LatLng(37.566669, 126.978406)
-        const val DEFAULT_CAMERA_ZOOM: Float = 16.0f
+        private val SEOUL_CITY_HALL_LATLNG: LatLng = LatLng(37.566669, 126.978406)
+        private const val DEFAULT_CAMERA_ZOOM: Float = 16.0f
 
         // 우리나라 동북, 서남 좌표
-        val SOUTH_KOREA_NORTH_EAST = LatLng(38.5, 131.9)
-        val SOUTH_KOREA_SOUTH_WEST = LatLng(33.0, 125.0)
+        private val SOUTH_KOREA_NORTH_EAST = LatLng(38.5, 131.9)
+        private val SOUTH_KOREA_SOUTH_WEST = LatLng(33.0, 125.0)
     }
 }

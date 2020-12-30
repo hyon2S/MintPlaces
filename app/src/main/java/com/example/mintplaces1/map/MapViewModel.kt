@@ -12,6 +12,7 @@ import com.google.android.gms.maps.CameraUpdate
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.*
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 /*
@@ -29,6 +30,8 @@ class MapViewModel(private val databaseViewModel: DatabaseViewModel): ViewModel(
     // 우리 나라 범위. 지도가 표시할 수 있는 범위를 우리나라로 제한하기 위해 사용.
     private val latLngBounds = LatLngBounds(SOUTH_KOREA_SOUTH_WEST, SOUTH_KOREA_NORTH_EAST)
 
+    // db에서 매장 위치를 받아오는 작업. 중간에 다른 일이 생기면 취소할 수 있게 따로 보관해 둠.
+    private var getStoreJob: Job? = null
     fun setMap(map: GoogleMap) {
         this.map = map
     }
@@ -72,8 +75,11 @@ class MapViewModel(private val databaseViewModel: DatabaseViewModel): ViewModel(
     private fun showStores(farRightLatLng: LatLng, nearLeftLatLng: LatLng) {
         Log.d(TAG, "showStores()")
 
+        // 기존에 하고 있던 동작이 있으면 취소시킴
+        getStoreJob?.cancel()
+
         // 중간에 다른 변수가 생기면 scope 자체를 취소할 수 있게 job으로 만듦
-        viewModelScope.launch {
+        getStoreJob = viewModelScope.launch {
             val markerInfoClientList: List<MarkerInfoClient> = databaseViewModel.getStoresList(farRightLatLng, nearLeftLatLng)
             for (marker in markerInfoClientList) {
                 showStoreMarker(marker)

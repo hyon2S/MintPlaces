@@ -18,7 +18,7 @@ class DatabaseViewModel: ViewModel() {
         storeInfo = StoreInfo(name = name, latLng = latLng, address = address)
     }
 
-    fun initPlaceInfo() {
+    fun deletePlaceInfo() {
         storeInfo = null
     }
 

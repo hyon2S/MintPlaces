@@ -32,6 +32,9 @@ class MapViewModel(private val databaseViewModel: DatabaseViewModel): ViewModel(
 
     // db에서 매장 위치를 받아오는 작업. 중간에 다른 일이 생기면 취소할 수 있게 따로 보관해 둠.
     private var getStoreJob: Job? = null
+    // db에서 받아온 매장 위치를 표시하는 마커를 보관. 화면을 갱신해서 마커를 새로 받아올 때는 marker.remove()를 하고 list를 비운 뒤 다시 채움.
+    private val storeMarkerList = mutableListOf<Marker>()
+
     fun setMap(map: GoogleMap) {
         this.map = map
     }
@@ -76,7 +79,7 @@ class MapViewModel(private val databaseViewModel: DatabaseViewModel): ViewModel(
         Log.d(TAG, "showStores()")
 
         // 기존에 하고 있던 동작이 있으면 취소시킴
-        getStoreJob?.cancel()
+        cancelStoresList()
 
         // 중간에 다른 변수가 생기면 scope 자체를 취소할 수 있게 job으로 만듦
         getStoreJob = viewModelScope.launch {
@@ -95,7 +98,19 @@ class MapViewModel(private val databaseViewModel: DatabaseViewModel): ViewModel(
                 .title(markerInfoClient.name)
                 .visible(true)
         // MarkerInfoClient의 DocumentReference는 추후 사용 방법 생각해보기
-        map.addMarker(markerOptions)
+
+        // 마커 추후 삭제하려면 전역변수 리스트에 저장해두기. Marker.remove()
+        val marker = map.addMarker(markerOptions)
+        storeMarkerList.add(marker)
+    }
+
+    private fun cancelStoresList() {
+        getStoreJob?.cancel() // db에서 받아오던 것이 있으면 취소하고
+
+        // 있던 마커는 모두 제거
+        for (marker in storeMarkerList)
+            marker.remove()
+        storeMarkerList.clear()
     }
 
     // 지도의 기본 카메라 시작 위치를 서울시청으로 설정

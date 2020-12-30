@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
 class MapViewModel(private val databaseViewModel: DatabaseViewModel): ViewModel() {
     private lateinit var map: GoogleMap
     // 선택한 장소를 표시 할 마커. 장소 선택은 한 번에 한 군데밖에 안 되므로 마커 하나를 끝까지 사용.
-    var marker: Marker? = null
+    var placeSearchMarker: Marker? = null
     // 사용자의 현재 위치를 (얻어올 수 있으면) 얻어와서 저장함.
     // 위치 추적 처음 시작할때는 null, 그 외에는 계속 새로 얻은 위치로 업데이트 시켜줌.
     var currentLocation: Location? = null
@@ -45,7 +45,7 @@ class MapViewModel(private val databaseViewModel: DatabaseViewModel): ViewModel(
                 isMyLocationButtonEnabled = true
             }
             // 처음 시작할 때 visible을 false로 세팅한 마커를 일단 지도에 추가해놓고,
-            marker = addMarker(
+            placeSearchMarker = addMarker(
                     MarkerOptions()
                             .position(SEOUL_CITY_HALL_LATLNG) // 마커 위치는, 일단 걍 아무 위치나 있어야되니까 넣은 것으로 별 의미는 없음
                             .visible(false) // 처음 시작할때는 안 보이게 함.
@@ -121,7 +121,7 @@ class MapViewModel(private val databaseViewModel: DatabaseViewModel): ViewModel(
         if (!latLngBounds.contains(latLng)) throw LatLngBoundException()
 
         // 마커 세팅
-        marker?.apply {
+        placeSearchMarker?.apply {
             position = latLng
             isVisible = true
         }

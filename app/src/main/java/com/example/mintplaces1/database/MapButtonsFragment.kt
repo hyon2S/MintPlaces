@@ -55,7 +55,8 @@ class MapButtonsFragment : Fragment() {
                     Snackbar.make(requireActivity().findViewById(android.R.id.content), getString(R.string.success_message_add_store), Snackbar.LENGTH_SHORT).show()
                     // 등록한 매장을 다시 등록할 일은 없으니 편의상 저장한 place 정보를 삭제하기
                     databaseViewModel.deletePlaceInfo()
-                    // mapViewModel의 marker도 초기화시켜야될것같은데
+                    mapViewModel.hidePlaceSearchMarker()
+                    // 매장 db에서 다시 받아오는 작업 필요?
                 } catch (e: Exception) {
                     if (e is NullUserException || e is StoreInfoNotExistException) {
                         Snackbar.make(requireActivity().findViewById(android.R.id.content), e.message!!, Snackbar.LENGTH_SHORT).show()

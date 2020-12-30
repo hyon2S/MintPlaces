@@ -171,6 +171,12 @@ class MapViewModel(private val databaseViewModel: DatabaseViewModel): ViewModel(
         map.animateCamera(cameraUpdate) // 순간이동 말고 스르륵 이동
     }
 
+    // 매장을 등록했으니 기존의 파란색 마커를 없앰
+    fun hidePlaceSearchMarker() {
+        placeSearchMarker?.isVisible = false
+        // 얘는 하나만 갖고 계속 쓸거니까 굳이 삭제하지 않고 그냥 안보이게 숨김
+    }
+
     companion object {
         private const val TAG = "MyLogMapVM"
 

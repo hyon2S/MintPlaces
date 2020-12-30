@@ -76,10 +76,20 @@ class MapViewModel(private val databaseViewModel: DatabaseViewModel): ViewModel(
         viewModelScope.launch {
             val markerInfoClientList: List<MarkerInfoClient> = databaseViewModel.getStoresList(farRightLatLng, nearLeftLatLng)
             for (marker in markerInfoClientList) {
-                // 마커 만들기
+                showStoreMarker(marker)
             }
         }
         Log.d(TAG, "showStores 종료")
+    }
+
+    private fun showStoreMarker(markerInfoClient: MarkerInfoClient) {
+        Log.d(TAG, "showStoreMarker()")
+        val markerOptions = MarkerOptions()
+                .position(markerInfoClient.latLng)
+                .title(markerInfoClient.name)
+                .visible(true)
+        // MarkerInfoClient의 DocumentReference는 추후 사용 방법 생각해보기
+        map.addMarker(markerOptions)
     }
 
     // 지도의 기본 카메라 시작 위치를 서울시청으로 설정

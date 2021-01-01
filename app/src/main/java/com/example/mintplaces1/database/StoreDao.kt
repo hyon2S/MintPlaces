@@ -5,7 +5,9 @@ import com.example.mintplaces1.dto.PlaceInfo
 import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
+import java.util.*
 
 /*
 C: collection, D: document, F: Field
@@ -109,19 +111,35 @@ class StoreDao {
 
     // 위도 fromLat ~ toLat, 경도 fromLng ~ toLng 사이의 매장 문서를 담고있는 쿼리스냅샷을 얻어옴
     private suspend fun getQuerySnapshot(fromLat: Int, toLat: Int, fromLng: Int, toLng: Int): List<QuerySnapshot> {
-        val querySnapshotList = mutableListOf<QuerySnapshot>()
+        // 코루틴스코프 안에서 동기화처리를 위해 synchronized 사용
+        val querySnapshotList = Collections.synchronizedList(mutableListOf<QuerySnapshot>())
 
         // 위도 fromLat ~ toLat
         val latQuerySnapshot: QuerySnapshot = getLatQuerySnapshot(fromLat, toLat)
 
+        // 아래의 for문에서 얻은 job을 모두 담음
+        val jobList = mutableListOf<Job>()
+
+        /*
+        * 화면에 표시되는 지도 범위가 넓어져 받아와야 할 위도, 경도 문서가 많아질수록
+        * for 루프를 실행하는 데 시간이 오래 걸림.
+        * for루프 안에서 코루틴스코프를 실행해서
+        * 데이터를 다 받아올 때 까지 기다리지 않고 다음 루프로 넘어갈 수 있게 함.
+        * 모든 for루프가 끝나고나서 joinAll()로 모든 job이 끝나는 것을 기다림.
+        * (기다리지 않으면 일부 쿼리스냅샷이 list에 담기지 않을 수 있음.)
+        * */
         for (latDocumentSnapshot in latQuerySnapshot.documents) {
             // 경도 fromLng ~ toLng
-            val lngQuerySnapshot: QuerySnapshot = getLngQuerySnapshot(fromLng, toLng, latDocumentSnapshot.reference)
-            for (lngDocumentSnapshot in lngQuerySnapshot.documents) {
-                val markerInfoQuerySnapshot: QuerySnapshot = lngDocumentSnapshot.reference.collection(MARKER_INFO).get().await()
-                querySnapshotList.add(markerInfoQuerySnapshot)
+            val job = CoroutineScope(Dispatchers.Default).launch {
+                val lngQuerySnapshot: QuerySnapshot = getLngQuerySnapshot(fromLng, toLng, latDocumentSnapshot.reference)
+                for (lngDocumentSnapshot in lngQuerySnapshot.documents) {
+                    val markerInfoQuerySnapshot: QuerySnapshot = lngDocumentSnapshot.reference.collection(MARKER_INFO).get().await()
+                    querySnapshotList.add(markerInfoQuerySnapshot)
+                }
             }
+            jobList.add(job)
         }
+        jobList.joinAll()
         return querySnapshotList
     }
 

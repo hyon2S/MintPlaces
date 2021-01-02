@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.drawerlayout.widget.DrawerLayout
 import com.example.mintplaces1.database.MapButtonsFragment
 import com.example.mintplaces1.map.MapFragment
@@ -13,6 +12,7 @@ import com.example.mintplaces1.map.PlaceSearchFragment
 import com.example.mintplaces1.network.NetworkConnectionCheckAdapter
 import com.example.mintplaces1.network.NetworkConnectionChecker
 import com.example.mintplaces1.user.MyNavigationFragment
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_map.*
 
 /*
@@ -27,7 +27,7 @@ class MapActivity : AppCompatActivity(), NetworkConnectionCheckAdapter {
     override fun notifyNetworkConnection(): Boolean {
         val isNetworkConnected = networkConnectionChecker.isNetworkConnected()
         if (!isNetworkConnected)
-            Toast.makeText(this, getString(R.string.request_network_connection), Toast.LENGTH_SHORT).show()
+            Snackbar.make(this.findViewById(android.R.id.content), getString(R.string.request_network_connection), Snackbar.LENGTH_SHORT).show()
         return isNetworkConnected
     }
 

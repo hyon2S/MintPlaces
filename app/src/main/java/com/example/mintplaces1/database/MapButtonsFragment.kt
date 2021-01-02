@@ -3,6 +3,7 @@ package com.example.mintplaces1.database
 import android.app.AlertDialog
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -47,8 +48,7 @@ class MapButtonsFragment : Fragment() {
         mapViewModel.showPlaceSearchMarker()
 
         // 진짜 매장 등록 할 건지 물어보기. yes면 계속 진행.
-        val builder = AlertDialog.Builder(context)
-        builder.apply {
+        val dialog: AlertDialog = AlertDialog.Builder(context).apply {
             setMessage(getString(R.string.confirm_message_add_store))
             setPositiveButton(getString(R.string.yes)) { _, _ ->
                 Log.d(TAG, "매장을 등록합니다.")
@@ -76,9 +76,11 @@ class MapButtonsFragment : Fragment() {
                 Log.d(TAG, "매장 등록 취소")
                 // 아무것도 안 함
             }
-        }
+        }.create()
 
-        builder.create().show()
+        // 다이얼로그가 뜰 때 매장 위치를 가리지 않도록 밑으로 내림
+        dialog.window?.setGravity(Gravity.BOTTOM)
+        dialog.show()
     }
 
     companion object {

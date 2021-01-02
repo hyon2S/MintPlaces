@@ -24,7 +24,7 @@ class DatabaseViewModel: ViewModel() {
 
     // 데이터베이스에 새 매장 정보를 추가
     // 추가가 정상적으로 완료됐는지 실패했는지 결과를 반환해야되지않을까..?
-    fun addStore(user: FirebaseUser) {
+    suspend fun addStore(user: FirebaseUser) {
         try {
             repository.addStore(storeInfo!!, user)
         } catch (e: NullPointerException) {

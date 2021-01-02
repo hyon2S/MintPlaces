@@ -14,7 +14,7 @@ class Repository {
 
     // db에 새 매장 등록
     // 성공, 실패 여부를 반환해야되지 않을까..?
-    fun addStore(storeInfo: StoreInfo, user: FirebaseUser) {
+    suspend fun addStore(storeInfo: StoreInfo, user: FirebaseUser) {
         // StoreInfo -> PlaceInfo로 변환
         val lat = storeInfo.latLng.latitude
         val lng = storeInfo.latLng.longitude

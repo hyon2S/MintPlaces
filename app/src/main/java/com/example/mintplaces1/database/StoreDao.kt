@@ -67,7 +67,7 @@ class StoreDao {
     private val db = Firebase.firestore
 
     // 매장을 db에 추가하고, 새 매장 정보가 저장되어있는 DocumentReference를 반환
-    fun addPlaceInfo(PlaceInfo: PlaceInfo): DocumentReference {
+    suspend fun addPlaceInfo(PlaceInfo: PlaceInfo): DocumentReference {
         val newStoreDocument: DocumentReference = db.collection(STORE).document()
         val placeInfoCollection: CollectionReference = newStoreDocument.collection(PLACE_INFO)
         val placeInfoListDocument: DocumentReference = placeInfoCollection.document(PLACE_INFO_LIST)
@@ -78,12 +78,12 @@ class StoreDao {
                 set(newPlaceInfoDocument, PlaceInfo)
                 set(placeInfoListDocument, hashMapOf(LIST to listOf(newPlaceInfoDocument)))
             }
-        } // addOnSuccess, addOnFailure 해야되나..?
+        }.await()
         return newStoreDocument
     }
 
     // 위도, 경도 별로 정리된 문서에 새 매장 문서를 추가
-    fun addStoreToList(MarkerInfoServer: MarkerInfoServer, latIndex: Int, lngIndex: Int) {
+    suspend fun addStoreToList(MarkerInfoServer: MarkerInfoServer, latIndex: Int, lngIndex: Int) {
         val latDocument = db.collection(BY_LAT).document(latIndex.toString())
         val lngDocument = latDocument.collection(BY_LNG).document(lngIndex.toString())
         val markerInfoDocument = lngDocument.collection(MARKER_INFO).document()
@@ -94,7 +94,7 @@ class StoreDao {
                 set(lngDocument, dummyData)
                 set(markerInfoDocument, MarkerInfoServer)
             }
-        }
+        }.await()
     }
 
     suspend fun getStores(fromLat: Int, toLat: Int, fromLng: Int, toLng: Int): List<DocumentSnapshot> {

@@ -21,17 +21,17 @@ C: byLat
         C: byLng
             D: lng1(원래 Double인 경도를 소수점 둘째짜리까지 정수화 시킴)
                 F: 내용은 중요하지않지만 문서 자체가 존재하기 하기 위해 들어가는 형식적인 필드
-                    C: markerInfo
-                        D: MarkerInfo1(autoID)
-                                                F: name String
-                                                F: geoPoint GeoPoint
-                                                F: docRef DocumentReference (컬렉션 store 하위에 있는 각각의 store들의 DocumentReference)
-                        D: MarkerInfo2(autoID)
-                                                F: name String
-                                                F: geoPoint GeoPoint
-                                                F: docRef DocumentReference (컬렉션 store 하위에 있는 각각의 store들의 DocumentReference)
+                C: markerInfo
+                    D: markerInfo1(autoID)
+                        F: name String (이름 뺄까..?)
+                        F: geoPoint GeoPoint
+                        F: docRef DocumentReference (컬렉션 store 하위에 있는 각각의 store들의 DocumentReference)
+                    D: markerInfo2(autoID)
+                        F: name String
+                        F: geoPoint GeoPoint
+                        F: docRef DocumentReference (컬렉션 store 하위에 있는 각각의 store들의 DocumentReference)
             D: lng2
-                    (이하생략)
+                (이하생략)
     D: lat2
         (이하생략)
 
@@ -56,9 +56,34 @@ C: store
             D: storeTypeList
                 F: list Array<Reference>
             D: storeType1(autoID)
-                (이하생략)
+                F: storeType Map
+                    디저트 Boolean
+                    뷔페 Boolean
+                    일반음식점 Boolean
+                    마트 Boolean
+                F: editInfo Map
+                    editor String (uid)
+                    timestamp TimeStamp
             D: storeType2(autoID)
                 (이하생략)
+            (이하생략)
+        C: takeoutOrInstore
+            D: takeoutOrInstoreList
+                F: list Array<Reference>
+            D: takeoutOrInstore1(autoID)
+                F: takeoutOrInStore Map
+                    매장취식가능 Boolean
+                    포장가능 Boolean
+                F: editInfo Map
+                    editor String (uid)
+                    timestamp TimeStamp
+            D: takeoutOrInstore2(autoID)
+                (이하생략)
+            (이하생략)
+        C: Foods
+            D: Food1(autoID)
+            D: Food2(autoID)
+            (이하생략)
     D: store2(autoID)
         (이하생략)
 * */

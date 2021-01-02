@@ -69,7 +69,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     }
                     false -> {
                         Log.d(TAG, "권한 미허용")
-                        // 위치 얻어올 수 없다고 메시지 띄우기
+                        // 권한이 없어서 위치 얻어올 수 없다고 메시지 띄우기
                     }
                 }
             }

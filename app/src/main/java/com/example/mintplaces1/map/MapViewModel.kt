@@ -24,9 +24,6 @@ class MapViewModel(private val databaseViewModel: DatabaseViewModel): ViewModel(
     private lateinit var map: GoogleMap
     // 선택한 장소를 표시 할 마커. 장소 선택은 한 번에 한 군데밖에 안 되므로 마커 하나를 끝까지 사용.
     var placeSearchMarker: Marker? = null
-    // 사용자의 현재 위치를 (얻어올 수 있으면) 얻어와서 저장함.
-    // 위치 추적 처음 시작할때는 null, 그 외에는 계속 새로 얻은 위치로 업데이트 시켜줌.
-    var currentLocation: Location? = null
     // 우리 나라 범위. 지도가 표시할 수 있는 범위를 우리나라로 제한하기 위해 사용.
     private val latLngBounds = LatLngBounds(SOUTH_KOREA_SOUTH_WEST, SOUTH_KOREA_NORTH_EAST)
 
@@ -146,20 +143,14 @@ class MapViewModel(private val databaseViewModel: DatabaseViewModel): ViewModel(
         map.setOnMyLocationButtonClickListener { listener.onMyLocationButtonClick() }
     }
 
-    // 사용자의 현재 위치(var currentLocation)를 업데이트함
-    // 내위치버튼을 누르면 MapFragment에 의해 주기적으로 호출되도록 함
-    fun updateCurrentLocation(location: Location) {
-        if (currentLocation == null) {
-            // 맨 처음에 위치를 받아올 때는 현재 위치로 카메라 이동하고 시작함.
-            val currentLatLng = LatLng(location.latitude, location.longitude)
-            // 우리나라 범위 밖이면 예외를 발생시켜서 중단시킴.
-            if (!latLngBounds.contains(currentLatLng)) throw LatLngBoundException()
-            val cameraUpdate: CameraUpdate = CameraUpdateFactory.newLatLng(currentLatLng)
-            map.moveCamera(cameraUpdate)
-        }
-        // 위치가 null이 아닌 경우는 위치 업데이트만 하고 굳이 카메라 이동은 안 함.
-        // 주기적으로 강제로 카메라 위치를 이동시키면 다른데 보다가 카메라가 움직여서 화날수도 있음...
-        currentLocation = location
+    // 사용자의 현재 위치로 카메라 이동시킴
+    // 위치권한허용 && GPS허용 상태일때만 호출됨.
+    fun moveCameraToCurrentLocation(location: Location) {
+        val currentLatLng = LatLng(location.latitude, location.longitude)
+        // 우리나라 범위 밖이면 예외를 발생시켜서 중단시킴.
+        if (!latLngBounds.contains(currentLatLng)) throw LatLngBoundException()
+        val cameraUpdate: CameraUpdate = CameraUpdateFactory.newLatLng(currentLatLng)
+        map.moveCamera(cameraUpdate)
     }
 
     // 지정한 장소를 마커에 표시

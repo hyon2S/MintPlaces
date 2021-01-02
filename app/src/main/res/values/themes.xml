@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.Mintplaces1" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.Mintplaces1" parent="Theme.Design.Light.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/purple_500</item>
         <item name="colorPrimaryVariant">@color/teal_700</item>
@@ -16,6 +16,27 @@
 
     <style name="NavigationViewStyle">
         <item name="android:layout_marginTop">30sp</item>
+        <item name="android:background">@color/white</item>
+    </style>
+
+    <style name="NavigationViewTvStyle">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">bold</item>
+
+        <item name="android:paddingHorizontal">15sp</item>
+        <item name="android:paddingVertical">5sp</item>
+    </style>
+
+    <style name="NavigationViewTitleTvStyle" parent="NavigationViewTvStyle">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@color/teal_200</item>
+    </style>
+
+    <style name="NavigationViewBtnStyle">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:paddingHorizontal">40sp</item>
+        <item name="android:gravity">left|center_vertical</item>
     </style>
 
     <style name="ToolbarStyle">
@@ -29,5 +50,6 @@
 
     <style name="MapBottomButtonStyle">
         <item name="android:layout_margin">20sp</item>
+        <item name="android:tint">@color/white</item>
     </style>
 </resources>

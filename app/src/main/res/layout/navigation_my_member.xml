@@ -5,17 +5,20 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
     <TextView
+        style="@style/NavigationViewTvStyle"
         android:id="@+id/tv_username"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         />
     <Button
+        style="@style/NavigationViewBtnStyle"
         android:id="@+id/btn_change_username"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/change_username"
         />
     <Button
+        style="@style/NavigationViewBtnStyle"
         android:id="@+id/btn_sign_out"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

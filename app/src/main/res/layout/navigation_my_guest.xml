@@ -5,11 +5,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
     <TextView
+        style="@style/NavigationViewTvStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/guest"
         />
     <Button
+        style="@style/NavigationViewBtnStyle"
         android:id="@+id/btn_sign_in_sign_up"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -24,9 +24,11 @@ class MapActivity : AppCompatActivity(), NetworkConnectionCheckAdapter {
     // 네트워크 연결 상태 확인
     override lateinit var networkConnectionChecker: NetworkConnectionChecker
     // 호출했을 시점에 네트워크 연결이 끊겨있으면 메시지 띄움.
-    override fun notifyNetworkConnection() {
-        if (!networkConnectionChecker.isNetworkConnected())
+    override fun notifyNetworkConnection(): Boolean {
+        val isNetworkConnected = networkConnectionChecker.isNetworkConnected()
+        if (!isNetworkConnected)
             Toast.makeText(this, getString(R.string.request_network_connection), Toast.LENGTH_SHORT).show()
+        return isNetworkConnected
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

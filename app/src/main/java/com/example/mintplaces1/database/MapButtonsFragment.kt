@@ -59,6 +59,7 @@ class MapButtonsFragment : Fragment() {
                     databaseViewModel.deletePlaceInfo()
                     mapViewModel.hidePlaceSearchMarker()
                     // 매장 db에서 다시 받아오는 작업 필요?
+                    mapViewModel.showStores()
                 } catch (e: Exception) {
                     if (e is NullUserException || e is StoreInfoNotExistException) {
                         Snackbar.make(requireActivity().findViewById(android.R.id.content), e.message!!, Snackbar.LENGTH_SHORT).show()

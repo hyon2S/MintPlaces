@@ -71,12 +71,7 @@ class MapViewModel(private val databaseViewModel: DatabaseViewModel): ViewModel(
 
             setOnCameraIdleListener {
                 // 카메라 이동이 멈추면 카메라 범위 내에 있는 매장 정보를 얻어오기
-                val farRightLatLng = map.projection.visibleRegion.farRight
-                val nearLeftLatLng = map.projection.visibleRegion.nearLeft
-                Log.d(TAG, "카메라 범위: ${farRightLatLng}, ${nearLeftLatLng}")
-
-                // 현재 카메라가 보여주는 범위 안에 있는 매장 정보 얻어오기
-                showStores(farRightLatLng, nearLeftLatLng)
+                showStores()
             }
         }
         // 시작할 때 카메라 설정
@@ -84,8 +79,13 @@ class MapViewModel(private val databaseViewModel: DatabaseViewModel): ViewModel(
     }
 
     // 지정된 위도, 경도 범위 안에서 등록된 매장들을 db에서 가져옴
-    private fun showStores(farRightLatLng: LatLng, nearLeftLatLng: LatLng) {
+    fun showStores() {
         Log.d(TAG, "showStores()")
+
+        // 현재 카메라가 보여주는 범위 안에 있는 매장 정보 얻어오기
+        val farRightLatLng = map.projection.visibleRegion.farRight
+        val nearLeftLatLng = map.projection.visibleRegion.nearLeft
+        Log.d(TAG, "카메라 범위: ${farRightLatLng}, ${nearLeftLatLng}")
 
         // 기존에 하고 있던 동작이 있으면 취소시킴
         cancelStoresList()

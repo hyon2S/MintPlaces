@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.mintplaces1.R
+import com.example.mintplaces1.network.NetworkConnectionCheckAdapter
 import com.firebase.ui.auth.AuthUI
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_my_navigation.*
@@ -42,7 +43,10 @@ class MyNavigationFragment : Fragment() {
         Log.d(TAG, "signIn()")
         val user = FirebaseUtil.getUser()
 
-        // 네트워크 연결되어있는지 확인부터 하기
+        // 네트워크 연결 안 돼있으면 종료
+        if (!(requireActivity() as NetworkConnectionCheckAdapter).notifyNetworkConnection()) {
+            return
+        }
 
         if (user != null) {
             Log.d(TAG, "이미 로그인 되어있습니다.")

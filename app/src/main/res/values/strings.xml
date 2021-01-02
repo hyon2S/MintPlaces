@@ -18,6 +18,8 @@
 
     <string name="change_username">닉네임변경</string>
     <string name="success_message_change_username">닉네임이 변경되었습니다.</string>
+    <string name="fail_message_change_username">닉네임 변경에 실패했습니다.</string>
+    <string name="require_username_message">닉네임을 입력해주세요.</string>
 
     <string name="confirm_message_add_store">매장을 등록하시겠습니까?</string>
     <string name="success_message_add_store">매장이 등록되었습니다.</string>

@@ -44,6 +44,7 @@ class MapButtonsFragment : Fragment() {
         Log.d(TAG, "addStore()")
 
         // 카메라가 다른 곳에 가있어도 추가할 매장 위치로 카메라 이동시킴
+        mapViewModel.showPlaceSearchMarker()
 
         // 진짜 매장 등록 할 건지 물어보기. yes면 계속 진행.
         val builder = AlertDialog.Builder(context)

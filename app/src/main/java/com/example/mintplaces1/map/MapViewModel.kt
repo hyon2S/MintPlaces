@@ -123,6 +123,12 @@ class MapViewModel(private val databaseViewModel: DatabaseViewModel): ViewModel(
         storeMarkerList.clear()
     }
 
+    fun showPlaceSearchMarker() {
+        val markerLatLng: LatLng = placeSearchMarker?.position ?: return
+        val cameraUpdate: CameraUpdate = CameraUpdateFactory.newLatLng(markerLatLng)
+        map.moveCamera(cameraUpdate)
+    }
+
     // 지도의 기본 카메라 시작 위치를 서울시청으로 설정
     fun setDefaultCameraLocation() {
         val cameraUpdate: CameraUpdate = CameraUpdateFactory.newLatLngZoom(

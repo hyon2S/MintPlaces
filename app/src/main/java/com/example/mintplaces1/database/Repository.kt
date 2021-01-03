@@ -2,11 +2,13 @@ package com.example.mintplaces1.database
 
 import android.util.Log
 import com.example.mintplaces1.dto.*
+import com.example.mintplaces1.exception.StoreAlreadyExistException
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.GeoPoint
+import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.toObject
 
 class Repository {
@@ -19,9 +21,17 @@ class Repository {
         val lat = storeInfo.latLng.latitude
         val lng = storeInfo.latLng.longitude
 
+        val latIndex: Int = (lat * LAT_LNG_INDEX_DIGIT).toInt()
+        val lngIndex: Int = (lng * LAT_LNG_INDEX_DIGIT).toInt()
+
         val geoPoint = GeoPoint(lat, lng)
 
         // 일단 이미 같은 위치의 store가 있는 것은 아닌지 확인하고,
+        val storeQuerySnapshot: QuerySnapshot = storeDao.getStoreQuerySnapshot(latIndex, lngIndex, geoPoint)
+        Log.d(TAG, "storeQuerySnapshot.size(): ${storeQuerySnapshot.size()}")
+        if (storeQuerySnapshot.size() > 0)
+            // 이미 매장이 존재합니다 예외
+            throw StoreAlreadyExistException()
 
         val editInfo = EditInfo(user.uid, Timestamp.now())
 

@@ -182,6 +182,14 @@ class StoreDao {
                     .get()
                     .await()
 
+    suspend fun getStoreQuerySnapshot(latIndex: Int, lngIndex: Int, geoPoint: GeoPoint): QuerySnapshot {
+        val markerInfoCollectionReference: CollectionReference = db.collection(BY_LAT).document(latIndex.toString())
+                .collection(BY_LNG).document(lngIndex.toString())
+                .collection(MARKER_INFO)
+        return markerInfoCollectionReference.whereEqualTo(GEO_POINT, geoPoint)
+                .get().await()
+    }
+
     companion object {
         private const val TAG = "MyLogStoreDao"
 
@@ -193,6 +201,7 @@ class StoreDao {
         private const val BY_LAT = "byLat"
         private const val BY_LNG = "byLng"
         private const val MARKER_INFO = "markerInfo"
+        private const val GEO_POINT = "geoPoint"
 
         // 아무 필드 없는 문서는 존재를 안하니까 어쩔수없이넣은 의미 없는 데이터.
         private val dummyData = hashMapOf("dummy" to 1)

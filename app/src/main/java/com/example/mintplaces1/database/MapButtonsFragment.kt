@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.mintplaces1.R
 import com.example.mintplaces1.exception.NullUserException
+import com.example.mintplaces1.exception.StoreAlreadyExistException
 import com.example.mintplaces1.exception.StoreInfoNotExistException
 import com.example.mintplaces1.map.MapViewModel
 import com.example.mintplaces1.map.MapViewModelFactory
@@ -65,7 +66,7 @@ class MapButtonsFragment : Fragment() {
                         // 매장 db에서 다시 받아오는 작업 필요?
                         mapViewModel.showStores()
                     } catch (e: Exception) {
-                        if (e is NullUserException || e is StoreInfoNotExistException) {
+                        if (e is NullUserException || e is StoreInfoNotExistException || e is StoreAlreadyExistException) {
                             Snackbar.make(requireActivity().findViewById(android.R.id.content), e.message!!, Snackbar.LENGTH_SHORT).show()
                         }
                         Log.e(TAG, "매장 추가 실패", e)

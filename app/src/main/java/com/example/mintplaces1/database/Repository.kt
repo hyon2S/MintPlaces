@@ -21,8 +21,8 @@ class Repository {
         val lat = storeInfo.latLng.latitude
         val lng = storeInfo.latLng.longitude
 
-        val latIndex: Int = (lat * LAT_LNG_INDEX_DIGIT).toInt()
-        val lngIndex: Int = (lng * LAT_LNG_INDEX_DIGIT).toInt()
+        val latIndex: Int = toIndex(lat)
+        val lngIndex: Int = toIndex(lng)
 
         val geoPoint = GeoPoint(lat, lng)
 
@@ -47,7 +47,7 @@ class Repository {
         val markerInfoServer = MarkerInfoServer(geoPoint, storeInfo.name, storeDocument)
 
         // 위도, 경도 별로 정리된 문서에 새 매장 문서를 추가
-        storeDao.addStoreToList(markerInfoServer, (lat * LAT_LNG_INDEX_DIGIT).toInt(), (lng * LAT_LNG_INDEX_DIGIT).toInt())
+        storeDao.addStoreToList(markerInfoServer, toIndex(lat), toIndex(lng))
     }
 
     // 지정된 위도, 경도 범위 안에서 등록된 매장들을 db에서 가져옴
@@ -55,10 +55,10 @@ class Repository {
     suspend fun getStoresList(farRightLatLng: LatLng, nearLeftLatLng: LatLng): List<MarkerInfoClient> {
         Log.d(TAG, "getStoresList()")
 
-        val fromLat: Int = (nearLeftLatLng.latitude * LAT_LNG_INDEX_DIGIT).toInt()
-        val toLat: Int = (farRightLatLng.latitude * LAT_LNG_INDEX_DIGIT).toInt()
-        val fromLng: Int = (nearLeftLatLng.longitude * LAT_LNG_INDEX_DIGIT).toInt()
-        val toLng: Int = (farRightLatLng.longitude * LAT_LNG_INDEX_DIGIT).toInt()
+        val fromLat: Int = toIndex(nearLeftLatLng.latitude)
+        val toLat: Int = toIndex(farRightLatLng.latitude)
+        val fromLng: Int = toIndex(nearLeftLatLng.longitude)
+        val toLng: Int = toIndex(farRightLatLng.longitude)
 
         val documentSnapshotList: List<DocumentSnapshot> = storeDao.getStores(fromLat, toLat, fromLng, toLng)
         Log.d(TAG, "${documentSnapshotList.size}")
@@ -77,6 +77,9 @@ class Repository {
         }
         return markerInfoClientList
     }
+
+    private fun toIndex(latOrLng: Double): Int =
+            (latOrLng * LAT_LNG_INDEX_DIGIT).toInt()
 
     companion object {
         private const val TAG = "MyLogRep"

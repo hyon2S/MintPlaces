@@ -69,9 +69,7 @@ class MyNavigationFragment : Fragment() {
                         setMemberMode()
                     }
             }
-            setNegativeButton(getString(R.string.no)) { _, _ ->
-                // 아무것도 안 함
-            }
+            setNegativeButton(getString(R.string.no), null) // 아니오 누르면 아무것도 안 하고 넘어감
         }
 
         builder.create().show()

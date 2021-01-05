@@ -75,11 +75,11 @@ class MapViewModel(private val databaseViewModel: DatabaseViewModel): ViewModel(
         setDefaultCameraLocation()
     }
 
-    // 지정된 위도, 경도 범위 안에서 등록된 매장들을 db에서 가져옴
+    // 현재 카메라가 보여주는 범위 안에 있는 매장 정보를 얻어와서 지도에 마커로 표시
     fun showStores() {
         Log.d(TAG, "showStores()")
 
-        // 현재 카메라가 보여주는 범위 안에 있는 매장 정보 얻어오기
+        // 현재 카메라가 보여주는 범위
         val farRightLatLng = map.projection.visibleRegion.farRight
         val nearLeftLatLng = map.projection.visibleRegion.nearLeft
         Log.d(TAG, "카메라 범위: ${farRightLatLng}, ${nearLeftLatLng}")
@@ -89,6 +89,7 @@ class MapViewModel(private val databaseViewModel: DatabaseViewModel): ViewModel(
 
         // 중간에 다른 변수가 생기면 scope 자체를 취소할 수 있게 job으로 만듦
         getStoreJob = viewModelScope.launch {
+            // 현재 카메라 범위 안에 있는 매장 정보를 db에서 가져옴
             val markerInfoClientList: List<MarkerInfoClient> = databaseViewModel.getStoresList(farRightLatLng, nearLeftLatLng)
             for (marker in markerInfoClientList) {
                 showStoreMarker(marker)

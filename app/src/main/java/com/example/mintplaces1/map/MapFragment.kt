@@ -14,6 +14,7 @@ import androidx.activity.result.registerForActivityResult
 import androidx.lifecycle.ViewModelProvider
 import com.example.mintplaces1.R
 import com.example.mintplaces1.database.DatabaseViewModel
+import com.example.mintplaces1.exception.LatLngBoundException
 import com.example.mintplaces1.network.NetworkConnectionCheckAdapter
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.GoogleMap
@@ -113,8 +114,13 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             // 위치가 null이면 gps 확인하라고 하기.
             if (location == null)
                 Snackbar.make(requireActivity().findViewById(android.R.id.content), getString(R.string.require_gps), Snackbar.LENGTH_SHORT).show()
-            else
-                mapViewModel.moveCameraToCurrentLocation(location)
+            else {
+                try {
+                    mapViewModel.moveCameraToCurrentLocation(location)
+                } catch (e: LatLngBoundException) {
+                    Snackbar.make(requireActivity().findViewById(android.R.id.content), e.message!!, Snackbar.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 
